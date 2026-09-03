@@ -1,0 +1,92 @@
+.zoomScroller .btn {
+	overflow: hidden;
+	width: 40px;
+	border:0 none;
+	border-radius:0;
+	margin-right:1px;
+	padding:0;
+	height:30px;
+	text-indent:-9999em;
+	position:relative;
+	
+	background: -moz-linear-gradient(top,  rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%);
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.15)), color-stop(100%,rgba(255,255,255,0.08)));
+background: -webkit-linear-gradient(top,  rgba(255,255,255,0.15) 0%,rgba(255,255,255,0.08) 100%);
+background: -o-linear-gradient(top,  rgba(255,255,255,0.15) 0%,rgba(255,255,255,0.08) 100%);
+background: -ms-linear-gradient(top,  rgba(255,255,255,0.15) 0%,rgba(255,255,255,0.08) 100%);
+background: linear-gradient(to bottom,  rgba(255,255,255,0.15) 0%,rgba(255,255,255,0.08) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#474b50', endColorstr='#3b3f45',GradientType=0 );
+box-shadow:0 1px 0 rgba(255, 255, 255, 0.08) inset;
+}
+.zoomScroller .btn:active {
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.zoomScroller .btn.disable, .zoomScroller .btn.disable:active {
+
+background: -moz-linear-gradient(top,  rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.09) 100%);
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.05)), color-stop(100%,rgba(255,255,255,0.09)));
+background: -webkit-linear-gradient(top,  rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.09) 100%);
+background: -o-linear-gradient(top,  rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.09) 100%);
+background: -ms-linear-gradient(top,  rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.09) 100%);
+background: linear-gradient(to bottom,  rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.09) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#35393e', endColorstr='#3c4045',GradientType=0 );
+
+box-shadow:0 1px rgba(255, 255, 255, 0.08) inset;
+cursor:text;
+
+}
+.zoomScroller .btn:first-child {
+	border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+}
+.zoomScroller .btn:last-child {
+	border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+}
+.zoomScroller {
+    font-size: 0;
+    position: relative;
+    vertical-align: middle;
+    white-space: nowrap;
+	position:absolute;
+	top:8px; left:14px;
+}
+.infoZoom {
+	color:#fff;
+	background-color:rgba(24,28,35,.48);
+	position:absolute;
+	left:100%; margin:-32px 0 0 -62px; width:62px; text-align:center; line-height:25px; font-size:11px; z-index:40;
+}
+.zoomScroller .btn:after { display:block; content:""; width:100%; position:absolute; left:0; top:0;  height:30px; background-image:url(../img/iconsWhite.png); background-repeat:no-repeat; opacity:.6; 
+transition: all .5s;
+-moz-transition: all .5s; 
+-webkit-transition: all .5s;
+-o-transition: all .5s;
+}
+#zoomDown:after { background-position:-43px -50px;}
+#zoomUp:after { background-position:-1px -50px;}
+#encajarEnPantalla:after { background-position:-2px -77px;}
+
+.zoomScroller .btn:hover:after { opacity:1;}
+.zoomScroller .disable:hover:after { opacity:.6;}
+
+#scroller {
+	position:relative;
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+	width:100%;
+	padding:0;
+	background-color:#5d5d5d;
+	
+	-webkit-transition: all 350ms cubic-bezier(0.085, 0.385, 0.420, 0.975);
+	   -moz-transition: all 350ms cubic-bezier(0.085, 0.385, 0.420, 0.975);
+		-ms-transition: all 350ms cubic-bezier(0.085, 0.385, 0.420, 0.975);
+		 -o-transition: all 350ms cubic-bezier(0.085, 0.385, 0.420, 0.975);
+			transition: all 350ms cubic-bezier(0.085, 0.385, 0.420, 0.975);
+}
+@media all and (min-width:600px) {
+	.infoZoom {	left:65%; margin:-33px 0 0 -62px;}
+	.zoomScroller {top:18px; left:24px;}
+}

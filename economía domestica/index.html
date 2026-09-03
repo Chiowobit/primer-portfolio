@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Economía doméstica</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --primary:#8b25eb;
+      --primary2:#58109b;
+      --success:#16a34a;
+      --danger:#dc2626;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+    }
+
+    *{box-sizing:border-box}
+    
+    body{
+      font-family:Arial,sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:20px;
+      color:var(--text);
+    }
+
+    .app{
+      max-width:1180px;
+      margin:0 auto;
+      background:var(--card);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:24px;
+    }
+    #btnBorrarTodo{
+      background-color: red;
+      cursor: pointer;
+    }
+        #btnBorrarTodo:hover{
+          background-color: rgb(132, 0, 0);
+        }
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+
+    .file-wrap{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+    }
+
+    .file-wrap label{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px 14px;
+      border-radius:10px;
+      background:#e5e7eb;
+      color:#111827;
+      font-weight:700;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .file-wrap label:hover{ background:#d1d5db; }
+
+    .file-wrap input[type="file"]{ display:none; }
+
+    h1{margin:0}
+    p{color:var(--muted); margin-top:0}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:16px;
+      margin:20px 0;
+    }
+
+    .card{
+      background:#f9fafb;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:16px;
+    }
+
+    form{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+      gap:12px;
+      margin:16px 0 20px;
+    }
+
+    input,select,button{
+      padding:12px;
+      border-radius:10px;
+      border:1px solid #d1d5db;
+      font-size:16px;
+      width:100%;
+    }
+
+    button{
+      background:var(--primary);
+      color:#fff;
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    button:hover{background:var(--primary2)}
+
+    .download-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:12px 0 16px;
+    }
+
+    .download-row button{
+      width:auto;
+      min-width:160px;
+    }
+
+    .message{
+      padding:14px;
+      border-radius:10px;
+      margin:16px 0;
+      font-weight:700;
+      line-height:1.5;
+    }
+
+    .ok{background:#dcfce7;color:#166534}
+    .warn{background:#fee2e2;color:#991b1b}
+    .neutral{background:#e0f2fe;color:#075985}
+
+    .mini-chart-wrap{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      margin-top:12px;
+    }
+
+    .chart-box{
+      width:100%;
+      height:260px;
+    }
+
+    #ahorroChart{
+      height:220px;
+    }
+
+    .legend-box{
+      margin-top:12px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+    }
+
+    .legend-box h4{
+      margin:0 0 10px;
+      font-size:15px;
+    }
+
+    .legend-scroll{
+      max-height:180px;
+      overflow-y:auto;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding-right:4px;
+    }
+
+    .legend-item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:14px;
+      color:#1f2937;
+    }
+
+    .legend-color{
+      width:14px;
+      height:14px;
+      border-radius:4px;
+      flex:0 0 auto;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:16px;
+    }
+
+    th,td{
+      padding:12px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+
+    .income{color:var(--success)}
+    .expense{color:var(--danger)}
+
+    .actions button{
+      background:var(--danger);
+      color:#fff;
+      padding:8px 10px;
+      font-size:14px;
+      width:auto;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+    }
+
+    .actions button:hover{ background:#b91c1c; }
+
+    .hidden{ display:none; }
+
+    .section-title{ margin-bottom:8px; }
+
+    @media (max-width: 900px){
+      .app{padding:18px}
+      .topbar{align-items:flex-start}
+      .download-row button{min-width:0; flex:1}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div>
+        <h1>Economía doméstica</h1>
+        <p>Registra ingresos y gastos mensuales, clasifica cada movimiento, visualiza dos gráficos interactivos y guarda o recupera los datos cuando quieras.</p>
+      </div>
+
+      <div class="file-wrap">
+        <label for="fileImport">Cargar archivo</label>
+        <input type="file" id="fileImport" accept=".json,.xlsx,.xls" />
+      </div>
+    </div>
+    <div id="avisoCarga" class="message neutral hidden"></div>
+
+    <form id="form">
+      <input type="number" id="importe" placeholder="Importe" step="0.01" required />
+
+      <select id="tipo" required>
+        <option value="">Selecciona tipo</option>
+        <option value="ingreso">Ingreso</option>
+        <option value="gasto">Gasto</option>
+      </select>
+
+      <div id="origenIngresoContainer" class="hidden">
+        <select id="origenIngreso">
+          <option value="">Selecciona origen</option>
+          <option value="nomina">Nómina</option>
+          <option value="bizum">Bizum</option>
+          <option value="transferencia">Transferencia</option>
+          <option value="efectivo">Efectivo</option>
+          <option value="devolucion">Devolución</option>
+          <option value="venta">Venta</option>
+          <option value="regalo">Regalo</option>
+          <option value="intereses">Intereses</option>
+          <option value="alquiler">Alquiler recibido</option>
+          <option value="otros">Otros</option>
+        </select>
+      </div>
+
+      <div id="categoriaGastoContainer" class="hidden">
+        <select id="categoriaGasto">
+          <option value="">Selecciona categoría</option>
+          <option value="alquiler">🏠 Alquiler / hipoteca</option>
+          <option value="luz">💡 Luz</option>
+          <option value="agua">🚰 Agua</option>
+          <option value="internet">🌐 Internet</option>
+          <option value="movil">📱 Móvil</option>
+          <option value="comunidad">🏢 Comunidad de vecinos</option>
+          <option value="gas">🔥 Gas</option>
+          <option value="supermercado">🛒 Supermercado</option>
+          <option value="ocio">🎮 Ocio</option>
+          <option value="restaurantes">🍽️ Restaurantes</option>
+          <option value="transporte">🚌 Transporte</option>
+          <option value="gasolina">⛽ Gasolina</option>
+          <option value="coche">🚗 Coche</option>
+          <option value="salud">🏥 Salud</option>
+          <option value="seguros">🛡️ Seguros</option>
+          <option value="suscripciones">📺 Suscripciones</option>
+          <option value="ropa">👕 Ropa / calzado</option>
+          <option value="hogar">🧹 Hogar / limpieza</option>
+          <option value="imprevistos">⚠️ Imprevistos</option>
+          <option value="educacion">🎓 Educación</option>
+          <option value="mascotas">🐾 Mascotas</option>
+          <option value="viajes">✈️ Viajes</option>
+          <option value="regalos">🎁 Regalos</option>
+          <option value="ahorro">💾 Ahorro</option>
+          <option value="otros">📦 Otros</option>
+        </select>
+      </div>
+
+      <input type="date" id="fecha" required />
+      <button type="submit">Añadir</button>
+    </form>
+
+    <div class="grid">
+      <div class="card">
+        <h3 class="section-title">Ingresos del mes</h3>
+        <p id="totalIngresos">0 €</p>
+        <div class="mini-chart-wrap">
+          <div id="ingresoChart" class="chart-box"></div>
+          <div class="legend-box">
+            <h4>Leyenda de ingresos</h4>
+            <div id="legendIngresos" class="legend-scroll"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">Gastos del mes</h3>
+        <p id="totalGastos">0 €</p>
+        <div class="mini-chart-wrap">
+          <div id="gastoChart" class="chart-box"></div>
+          <div class="legend-box">
+            <h4>Leyenda de gastos</h4>
+            <div id="legendGastos" class="legend-scroll"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">Ahorro mensual</h3>
+        <p id="totalAhorro">0 €</p>
+        <div class="mini-chart-wrap">
+          <div id="ahorroChart" class="chart-box"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mensaje" class="message neutral">Introduce datos para ver la comparación mensual.</div>
+
+    <div class="download-row">
+      <button type="button" id="btnExportJSON">Descargar JSON</button>
+      <button type="button" id="btnExportExcel">Descargar Excel</button>
+      <button type="button" id="btnBorrarTodo">Borrar todo</button>
+    </div>
+
+    <div class="card">
+      <h3>Movimientos</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Origen / Categoría</th>
+            <th>Importe</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="lista"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <script>
+    const form = document.getElementById('form');
+    const importe = document.getElementById('importe');
+    const tipo = document.getElementById('tipo');
+    const origenIngresoContainer = document.getElementById('origenIngresoContainer');
+    const categoriaGastoContainer = document.getElementById('categoriaGastoContainer');
+    const origenIngreso = document.getElementById('origenIngreso');
+    const categoriaGasto = document.getElementById('categoriaGasto');
+    const fecha = document.getElementById('fecha');
+    const lista = document.getElementById('lista');
+    const totalIngresos = document.getElementById('totalIngresos');
+    const totalGastos = document.getElementById('totalGastos');
+    const totalAhorro = document.getElementById('totalAhorro');
+    const mensaje = document.getElementById('mensaje');
+    const ingresoChart = document.getElementById('ingresoChart');
+    const gastoChart = document.getElementById('gastoChart');
+    const ahorroChart = document.getElementById('ahorroChart');
+    const legendIngresos = document.getElementById('legendIngresos');
+    const legendGastos = document.getElementById('legendGastos');
+    const btnExportJSON = document.getElementById('btnExportJSON');
+    const btnExportExcel = document.getElementById('btnExportExcel');
+    const fileImport = document.getElementById('fileImport');
+
+    let movimientos = JSON.parse(localStorage.getItem('movimientos')) || [];
+    let ahorroRange = null;
+
+    const emojisGasto = {
+      alquiler: '🏠', luz: '💡', agua: '🚰', internet: '🌐', movil: '📱', comunidad: '🏢',
+      gas: '🔥', supermercado: '🛒', ocio: '🎮', restaurantes: '🍽️', transporte: '🚌',
+      gasolina: '⛽', coche: '🚗', salud: '🏥', seguros: '🛡️', suscripciones: '📺',
+      ropa: '👕', hogar: '🧹', imprevistos: '⚠️', educacion: '🎓', mascotas: '🐾',
+      viajes: '✈️', regalos: '🎁', ahorro: '💾', otros: '📦'
+    };
+
+    const coloresGasto = {
+      alquiler:'#6366f1', luz:'#f59e0b', agua:'#38bdf8', internet:'#8b5cf6', movil:'#ec4899',
+      comunidad:'#14b8a6', gas:'#f97316', supermercado:'#22c55e', ocio:'#ef4444',
+      restaurantes:'#fb7185', transporte:'#0ea5e9', gasolina:'#facc15', coche:'#64748b',
+      salud:'#10b981', seguros:'#3b82f6', suscripciones:'#a855f7', ropa:'#db2777',
+      hogar:'#84cc16', imprevistos:'#94a3b8', educacion:'#06b6d4', mascotas:'#d97706',
+      viajes:'#1d4ed8', regalos:'#c026d3', ahorro:'#16a34a', otros:'#6b7280'
+    };
+
+    const coloresIngreso = {
+      nomina:'#0f766e', bizum:'#7c3aed', transferencia:'#2563eb', efectivo:'#ea580c',
+      devolucion:'#0891b2', venta:'#16a34a', regalo:'#db2777', intereses:'#4f46e5',
+      alquiler:'#f59e0b', otros:'#6b7280'
+    };
+
+    const etiquetaIngreso = {
+      nomina: 'Nómina', bizum: 'Bizum', transferencia: 'Transferencia', efectivo: 'Efectivo',
+      devolucion: 'Devolución', venta: 'Venta', regalo: 'Regalo', intereses: 'Intereses',
+      alquiler: 'Alquiler recibido', otros: 'Otros'
+    };
+
+    const etiquetaGasto = {
+      alquiler: 'Alquiler / hipoteca', luz: 'Luz', agua: 'Agua', internet: 'Internet',
+      movil: 'Móvil', comunidad: 'Comunidad de vecinos', gas: 'Gas', supermercado: 'Supermercado',
+      ocio: 'Ocio', restaurantes: 'Restaurantes', transporte: 'Transporte público',
+      gasolina: 'Gasolina', coche: 'Coche', salud: 'Salud / farmacia',
+      seguros: 'Seguros', suscripciones: 'Suscripciones', ropa: 'Ropa / calzado',
+      hogar: 'Hogar / limpieza', imprevistos: 'Imprevistos', educacion: 'Educación',
+      mascotas: 'Mascotas', viajes: 'Viajes', regalos: 'Regalos', ahorro: 'Ahorro', otros: 'Otros'
+    };
+
+    const mesesOrden = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    fecha.valueAsDate = new Date();
+
+    function guardarDatos() {
+      localStorage.setItem('movimientos', JSON.stringify(movimientos));
+    }
+
+    function formatearMoneda(valor) {
+      return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(valor);
+    }
+
+    function obtenerMesAño(fechaTexto) {
+      const d = new Date(fechaTexto);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    function mesAnterior(mes) {
+      const [anio, mesNum] = mes.split('-').map(Number);
+      const d = new Date(anio, mesNum - 1, 1);
+      d.setMonth(d.getMonth() - 1);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    function capitalizarTexto(texto) {
+      if (!texto) return '';
+      return texto.toString().trim().replace(/[_-]+/g, ' ').toLowerCase().replace(/\b\p{L}/gu, letra => letra.toUpperCase());
+    }
+
+    function mostrarIngreso(origen) { return etiquetaIngreso[origen] || capitalizarTexto(origen); }
+    function mostrarGasto(categoria) { return etiquetaGasto[categoria] || capitalizarTexto(categoria); }
+
+    function calcularResumen(mes) {
+      const movimientosMes = movimientos.filter(m => obtenerMesAño(m.fecha) === mes);
+      const ingresos = movimientosMes.filter(m => m.tipo === 'ingreso').reduce((s, m) => s + Number(m.importe), 0);
+      const gastos = movimientosMes.filter(m => m.tipo === 'gasto').reduce((s, m) => s + Number(m.importe), 0);
+      return { ingresos, gastos, balance: ingresos - gastos };
+    }
+
+    function labelMes(mes) {
+      const [anio, mm] = mes.split('-');
+      const idx = Number(mm) - 1;
+      return `${mesesOrden[idx] || mm}/${anio}`;
+    }
+
+    function actualizarMensaje(mesActual) {
+      const actual = calcularResumen(mesActual);
+      const anterior = calcularResumen(mesAnterior(mesActual));
+      const diffIngresos = actual.ingresos - anterior.ingresos;
+      const diffGastos = actual.gastos - anterior.gastos;
+      const ahorro = actual.balance;
+
+      if (!movimientos.length) {
+        mensaje.className = 'message neutral';
+        mensaje.textContent = 'Introduce datos para ver la comparación mensual.';
+        return;
+      }
+
+      let texto = '';
+      let clase = 'neutral';
+
+      if (diffIngresos > 0) {
+        texto = `Has ingresado más que el mes anterior por ${formatearMoneda(diffIngresos)}. Tienes ${formatearMoneda(ahorro)} de ahorro.`;
+        clase = 'ok';
+      } else if (diffIngresos < 0) {
+        texto = `Has ingresado menos que el mes anterior por ${formatearMoneda(Math.abs(diffIngresos))}. Tienes ${formatearMoneda(ahorro)} de ahorro.`;
+        clase = 'warn';
+      } else {
+        texto = `Has ingresado lo mismo que el mes anterior. Tienes ${formatearMoneda(ahorro)} de ahorro.`;
+        clase = 'neutral';
+      }
+
+      if (diffGastos > 0) texto += ` Además, has gastado más que el mes anterior por ${formatearMoneda(diffGastos)}.`;
+      else if (diffGastos < 0) texto += ` Además, has gastado menos que el mes anterior por ${formatearMoneda(Math.abs(diffGastos))}.`;
+      else texto += ` Además, tus gastos son iguales a los del mes anterior.`;
+
+      mensaje.className = `message ${clase}`;
+      mensaje.textContent = texto;
+    }
+
+    function renderLeyendaIngresos(mesActual) {
+      const ingresos = movimientos.filter(m => m.tipo === 'ingreso' && obtenerMesAño(m.fecha) === mesActual);
+      const agregado = {};
+      ingresos.forEach(i => { agregado[i.origen] = (agregado[i.origen] || 0) + Number(i.importe); });
+
+      legendIngresos.innerHTML = '';
+
+      Object.keys(agregado).forEach(cat => {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.innerHTML = `
+          <span class="legend-color" style="background:${coloresIngreso[cat] || '#6b7280'}"></span>
+          <span>${mostrarIngreso(cat)}</span>
+          <span style="margin-left:auto;">${formatearMoneda(agregado[cat])}</span>
+        `;
+        legendIngresos.appendChild(item);
+      });
+    }
+
+    function renderLeyendaGastos(mesActual) {
+      const gastos = movimientos.filter(m => m.tipo === 'gasto' && obtenerMesAño(m.fecha) === mesActual);
+      const agregado = {};
+      gastos.forEach(g => { agregado[g.categoria] = (agregado[g.categoria] || 0) + Number(g.importe); });
+
+      legendGastos.innerHTML = '';
+
+      Object.keys(agregado).forEach(cat => {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.innerHTML = `
+          <span class="legend-color" style="background:${coloresGasto[cat] || '#6b7280'}"></span>
+          <span>${emojisGasto[cat] || '📦'} ${mostrarGasto(cat)}</span>
+          <span style="margin-left:auto;">${formatearMoneda(agregado[cat])}</span>
+        `;
+        legendGastos.appendChild(item);
+      });
+    }
+
+    function renderGastoChart(mesActual) {
+      const gastos = movimientos.filter(m => m.tipo === 'gasto' && obtenerMesAño(m.fecha) === mesActual);
+      const agregado = {};
+      gastos.forEach(g => { agregado[g.categoria] = (agregado[g.categoria] || 0) + Number(g.importe); });
+
+      const cats = Object.keys(agregado);
+      const labels = cats.map(cat => `${emojisGasto[cat] || '📦'} ${mostrarGasto(cat)}`);
+      const values = cats.map(cat => agregado[cat]);
+      const colors = cats.map(cat => coloresGasto[cat] || '#6b7280');
+
+      Plotly.newPlot(gastoChart, [{
+        type:'pie',
+        labels,
+        values,
+        hole:0.38,
+        sort:false,
+        textinfo:'none',
+        hovertemplate:'%{label}<br>%{value:.2f} €<extra></extra>',
+        marker:{colors, line:{color:'#fff', width:2}}
+      }], {
+        margin:{l:10,r:10,t:10,b:10},
+        showlegend:false,
+        paper_bgcolor:'rgba(0,0,0,0)',
+        plot_bgcolor:'rgba(0,0,0,0)'
+      }, {displayModeBar:false, responsive:true});
+    }
+
+    function renderIngresoChart(mesActual) {
+      const ingresos = movimientos.filter(m => m.tipo === 'ingreso' && obtenerMesAño(m.fecha) === mesActual);
+      const agregado = {};
+      ingresos.forEach(i => { agregado[i.origen] = (agregado[i.origen] || 0) + Number(i.importe); });
+
+      const cats = Object.keys(agregado);
+      const labels = cats.map(cat => mostrarIngreso(cat));
+      const values = cats.map(cat => agregado[cat]);
+      const colors = cats.map(cat => coloresIngreso[cat] || '#6b7280');
+
+      Plotly.newPlot(ingresoChart, [{
+        type:'pie',
+        labels,
+        values,
+        hole:0.38,
+        sort:false,
+        textinfo:'none',
+        hovertemplate:'%{label}<br>%{value:.2f} €<extra></extra>',
+        marker:{colors, line:{color:'#fff', width:2}}
+      }], {
+        margin:{l:10,r:10,t:10,b:10},
+        showlegend:false,
+        paper_bgcolor:'rgba(0,0,0,0)',
+        plot_bgcolor:'rgba(0,0,0,0)'
+      }, {displayModeBar:false, responsive:true});
+    }
+
+    function renderAhorroChart() {
+      const year = new Date().getFullYear();
+      const meses = Array.from({length: 12}, (_, i) => `${year}-${String(i + 1).padStart(2, '0')}`);
+      const labels = meses.map(labelMes);
+      const values = meses.map(m => calcularResumen(m).balance);
+
+      const minY = Math.min(0, ...values);
+      const maxY = Math.max(0, ...values);
+      ahorroRange = [minY - Math.abs(minY) * 0.1 - 1, maxY + Math.abs(maxY) * 0.1 + 1];
+
+      Plotly.newPlot(ahorroChart, [{
+        type:'bar',
+        x: labels,
+        y: values,
+        marker:{color:'#0ea5e9'},
+        hovertemplate:'Mes: %{x}<br>Ahorro: %{y:.2f} €<extra></extra>'
+      }], {
+        margin:{l:8,r:8,t:8,b:40},
+        paper_bgcolor:'rgba(0,0,0,0)',
+        plot_bgcolor:'rgba(0,0,0,0)',
+        xaxis:{
+          title_text:'Mes',
+          categoryorder:'array',
+          categoryarray: labels,
+          automargin:true
+        },
+        yaxis:{
+          title_text:'Ahorro',
+          range: ahorroRange,
+          automargin:true
+        }
+      }, {displayModeBar:false, responsive:true});
+    }
+
+    function actualizarCampos() {
+      const esIngreso = tipo.value === 'ingreso';
+      const esGasto = tipo.value === 'gasto';
+      origenIngresoContainer.classList.toggle('hidden', !esIngreso);
+      categoriaGastoContainer.classList.toggle('hidden', !esGasto);
+      origenIngreso.required = esIngreso;
+      categoriaGasto.required = esGasto;
+    }
+
+    function renderizar() {
+      const mesActual = obtenerMesAño(fecha.value);
+      const resumen = calcularResumen(mesActual);
+
+      totalIngresos.textContent = formatearMoneda(resumen.ingresos);
+      totalGastos.textContent = formatearMoneda(resumen.gastos);
+      totalAhorro.textContent = formatearMoneda(resumen.balance);
+
+      lista.innerHTML = '';
+
+      movimientos.slice().sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).forEach((m, index) => {
+        const fila = document.createElement('tr');
+        const origenOCategoria = m.tipo === 'ingreso' ? mostrarIngreso(m.origen) : mostrarGasto(m.categoria);
+        fila.innerHTML = `
+          <td>${m.fecha}</td>
+          <td class="${m.tipo}">${capitalizarTexto(m.tipo)}</td>
+          <td>${origenOCategoria}</td>
+          <td class="${m.tipo}">${m.tipo === 'ingreso' ? '+' : '-'}${formatearMoneda(m.importe)}</td>
+          <td class="actions">
+            <button onclick="eliminarMovimiento(${index})">Eliminar</button>
+          </td>
+        `;
+        lista.appendChild(fila);
+      });
+
+      actualizarMensaje(mesActual);
+      renderGastoChart(mesActual);
+      renderIngresoChart(mesActual);
+      renderAhorroChart();
+      renderLeyendaIngresos(mesActual);
+      renderLeyendaGastos(mesActual);
+    }
+    
+    function eliminarMovimiento(index) {
+      movimientos.splice(index, 1);
+      guardarDatos();
+      renderizar();
+    }
+
+    function descargarJSON() {
+      const blob = new Blob([JSON.stringify(movimientos, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'economia_domestica.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function descargarExcel() {
+      const datos = movimientos.map(m => ({
+        Fecha: m.fecha,
+        Tipo: capitalizarTexto(m.tipo),
+        Origen: m.tipo === 'ingreso' ? mostrarIngreso(m.origen) : '',
+        Categoria: m.tipo === 'gasto' ? mostrarGasto(m.categoria) : '',
+        Importe: Number(m.importe)
+      }));
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(datos);
+      XLSX.utils.book_append_sheet(wb, ws, 'Movimientos');
+      XLSX.writeFile(wb, 'economia_domestica.xlsx');
+    }
+    function borrarTodo() {
+      if (!confirm('¿Seguro que quieres borrar todos los movimientos?')) return;
+      movimientos = [];
+      localStorage.removeItem('movimientos');
+      fileImport.value = '';
+      renderizar();
+      mostrarAviso('Todos los movimientos se han borrado correctamente.', 'ok');
+    }
+    btnBorrarTodo.addEventListener('click', borrarTodo);
+
+    async function cargarArchivo(file) {
+      const ext = file.name.split('.').pop().toLowerCase();
+
+      if (ext === 'json') {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        if (Array.isArray(data)) {
+          movimientos = data;
+          guardarDatos();
+          renderizar();
+        }
+      }
+
+      if (ext === 'xlsx' || ext === 'xls') {
+        const buffer = await file.arrayBuffer();
+        const wb = XLSX.read(buffer, { type: 'array' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet);
+
+        movimientos = rows.map(row => ({
+          fecha: row.Fecha || row.fecha || '',
+          tipo: String(row.Tipo || row.tipo || '').toLowerCase(),
+          origen: row.Origen || row.origen || '',
+          categoria: row.Categoria || row.categoria || '',
+          importe: Number(row.Importe || row.importe || 0)
+        }));
+
+        guardarDatos();
+        renderizar();
+      }
+    }
+
+    tipo.addEventListener('change', actualizarCampos);
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const esIngreso = tipo.value === 'ingreso';
+
+      movimientos.push({
+        importe: parseFloat(importe.value),
+        tipo: tipo.value,
+        origen: esIngreso ? origenIngreso.value : '',
+        categoria: esIngreso ? '' : categoriaGasto.value,
+        fecha: fecha.value
+      });
+
+      guardarDatos();
+      form.reset();
+      fecha.valueAsDate = new Date();
+      actualizarCampos();
+      renderizar();
+    });
+
+    btnExportJSON.addEventListener('click', descargarJSON);
+    btnExportExcel.addEventListener('click', descargarExcel);
+    fileImport.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) cargarArchivo(file);
+      e.target.value = '';
+    });
+
+    actualizarCampos();
+    renderizar();
+    function mostrarAviso(texto, tipo = 'ok') {
+      setTimeout(() => avisoCarga.classList.add('hidden'), 3000);
+  avisoCarga.className = `message ${tipo}`;
+  avisoCarga.textContent = texto;
+  avisoCarga.classList.remove('hidden');
+}
+mostrarAviso('Archivo cargado correctamente.', 'ok');
+  </script>
+</body>
+</html>

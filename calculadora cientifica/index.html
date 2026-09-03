@@ -1,0 +1,287 @@
+<!DOCTYPE html> <!-- Indica que el documento usa HTML5 -->
+<html lang="es"> <!-- Abre el documento HTML y define el idioma español -->
+<head> <!-- Comienza la cabecera del documento -->
+  <meta charset="UTF-8" /> <!-- Define la codificación de caracteres para acentos y símbolos -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Hace que la página se adapte a móviles -->
+  <title>Calculadora Científica</title> <!-- Título que aparece en la pestaña del navegador -->
+  <style> /* Inicia el bloque de estilos CSS */
+
+    * { box-sizing: border-box; } /* Hace que padding y border cuenten dentro del tamaño total */
+
+    body { /* Estilos del cuerpo de la página */
+      margin: 0; /* Elimina el margen por defecto */
+      min-height: 100vh; /* Hace que el cuerpo ocupe toda la altura de la ventana */
+      display: grid; /* Usa grid para organizar el contenido */
+      place-items: center; /* Centra el contenido horizontal y verticalmente */
+      font-family: Arial, Helvetica, sans-serif; /* Fuente general de la página */
+      color: #fff; /* Color del texto en blanco */
+    } /* Fin de estilos del body */
+
+
+    .calculator { /* Contenedor principal de la calculadora */
+      width: min(95vw, 420px); /* Ancho adaptable con máximo de 420px */
+      background: #0f172a; /* Fondo oscuro del panel */
+      border: 1px solid #334155; /* Borde fino gris azulado */
+      border-radius: 18px; /* Bordes redondeados */
+      padding: 16px; /* Espaciado interno */
+      box-shadow: 0 20px 50px rgba(0,0,0,.35); /* Sombra para dar profundidad */
+    } /* Fin del contenedor principal */
+
+
+    .display { /* Estilo de la pantalla de resultados */
+      width: 100%; /* Ocupa todo el ancho disponible */
+      min-height: 84px; /* Altura mínima de la pantalla */
+      border: none; /* Sin borde visible */
+      outline: none; /* Quita el contorno al enfocar */
+      border-radius: 12px; /* Esquinas redondeadas */
+      padding: 14px; /* Espacio interno */
+      font-size: 1.8rem; /* Texto grande */
+      text-align: right; /* Alinea el texto a la derecha */
+      background: #111827; /* Fondo oscuro para la pantalla */
+      color: #e5e7eb; /* Color claro del texto */
+      margin-bottom: 14px; /* Separación inferior */
+      overflow-x: auto; /* Permite desplazamiento horizontal si sobra contenido */
+      overflow-y: hidden; /* Oculta desbordamiento vertical */
+      white-space: nowrap; /* Evita saltos de línea en la pantalla */
+    } /* Fin de estilos de la pantalla */
+
+
+    .buttons { /* Contenedor de los botones */
+      display: grid; /* Usa una rejilla para ordenar los botones */
+      grid-template-columns: repeat(4, 1fr); /* Crea 4 columnas iguales */
+      gap: 10px; /* Espacio entre botones */
+    } /* Fin del contenedor de botones */
+
+
+    button { /* Estilo general de todos los botones */
+      border: none; /* Quita el borde */
+      border-radius: 12px; /* Bordes redondeados */
+      padding: 16px 10px; /* Tamaño interno del botón */
+      font-size: 1rem; /* Tamaño del texto */
+      cursor: pointer; /* Cursor de mano al pasar encima */
+      background: #1e293b; /* Color base del botón */
+      color: #f8fafc; /* Color del texto */
+      transition: transform .08s ease, background .2s ease; /* Animaciones suaves */
+    } /* Fin del estilo base de botones */
+
+    button:hover { background: #334155; } /* Cambia el color al pasar el cursor */
+    button:active { transform: scale(0.97); } /* Efecto de pulsación al hacer clic */
+
+
+    .fn { background: #374151; } /* Color para botones de función */
+    .op { background: #2563eb; } /* Color para operadores */
+    .danger { background: #dc2626; } /* Color rojo para limpiar */
+    .equal { background: #16a34a; grid-column: span 2; } /* Botón igual ocupa dos columnas */
+    .wide { grid-column: span 2; } /* Botón ancho para el 0 */
+
+
+    .power-btn { /* Estilo del botón x² */
+      display: inline-flex; /* Permite alinear x y 2 en línea */
+      align-items: flex-start; /* Alinea el contenido hacia arriba */
+      justify-content: center; /* Centra horizontalmente el contenido */
+      gap: 1px; /* Espacio mínimo entre x y el superíndice */
+    } /* Fin del estilo del botón x² */
+
+
+    .power-btn sup { /* Estilo del superíndice 2 */
+      font-size: 0.7em; /* Hace el 2 más pequeño */
+      line-height: 1; /* Ajusta la altura de línea */
+      position: relative; /* Permite moverlo un poco */
+      top: -0.4em; /* Sube el 2 para que se vea elevado */
+    } /* Fin del estilo del superíndice */
+
+
+    .hint { /* Estilo del texto de ayuda */
+      margin-top: 12px; /* Separación superior */
+      font-size: .85rem; /* Texto pequeño */
+      color: #94a3b8; /* Color gris azulado */
+      line-height: 1.4; /* Espaciado entre líneas */
+    } /* Fin del texto de ayuda */
+  </style> <!-- Termina el bloque CSS -->
+</head> <!-- Termina la cabecera -->
+<body> <!-- Comienza el contenido visible -->
+  <div class="calculator"> <!-- Contenedor principal de la calculadora -->
+    <div id="display" class="display"></div> <!-- Pantalla donde se muestra la expresión o el resultado -->
+
+
+    <div class="buttons"> <!-- Contenedor de los botones -->
+      <button class="fn" onclick="insertText('Math.sin(')">sin</button> <!-- Inserta seno -->
+      <button class="fn" onclick="insertText('Math.cos(')">cos</button> <!-- Inserta coseno -->
+      <button class="fn" onclick="insertText('Math.tan(')">tan</button> <!-- Inserta tangente -->
+      <button class="danger" onclick="clearAll()">C</button> <!-- Borra todo -->
+
+
+      <button class="fn" onclick="insertText('Math.sqrt(')">√</button> <!-- Inserta raíz cuadrada -->
+      <button class="fn" onclick="insertText('Math.log10(')">log</button> <!-- Inserta logaritmo base 10 -->
+      <button class="fn" onclick="insertText('Math.log(')">ln</button> <!-- Inserta logaritmo natural -->
+      <button class="op" onclick="backspace()">⌫</button> <!-- Borra el último carácter -->
+
+
+      <button class="fn" onclick="insertText('(')">(</button> <!-- Inserta paréntesis de apertura -->
+      <button class="fn" onclick="insertText(')')">)</button> <!-- Inserta paréntesis de cierre -->
+      <button class="fn" onclick="insertText('Math.PI')">π</button> <!-- Inserta PI -->
+      <button class="fn" onclick="insertText('Math.E')">e</button> <!-- Inserta el número de Euler -->
+
+
+      <button onclick="insertText('7')">7</button> <!-- Inserta 7 -->
+      <button onclick="insertText('8')">8</button> <!-- Inserta 8 -->
+      <button onclick="insertText('9')">9</button> <!-- Inserta 9 -->
+      <button class="op" onclick="insertText('/')">÷</button> <!-- Inserta división -->
+
+
+      <button onclick="insertText('4')">4</button> <!-- Inserta 4 -->
+      <button onclick="insertText('5')">5</button> <!-- Inserta 5 -->
+      <button onclick="insertText('6')">6</button> <!-- Inserta 6 -->
+      <button class="op" onclick="insertText('*')">×</button> <!-- Inserta multiplicación -->
+
+
+      <button onclick="insertText('1')">1</button> <!-- Inserta 1 -->
+      <button onclick="insertText('2')">2</button> <!-- Inserta 2 -->
+      <button onclick="insertText('3')">3</button> <!-- Inserta 3 -->
+      <button class="op" onclick="insertText('-')">−</button> <!-- Inserta resta -->
+
+
+      <button class="wide" onclick="insertText('0')">0</button> <!-- Inserta 0 ocupando dos columnas -->
+      <button onclick="insertText('.')">.</button> <!-- Inserta punto decimal -->
+      <button class="op" onclick="insertText('+')">+</button> <!-- Inserta suma -->
+
+
+      <button class="fn" onclick="insertAnswer()">Ans</button> <!-- Inserta el último resultado -->
+      <button class="equal" onclick="calculate()">=</button> <!-- Calcula la operación -->
+      <button class="fn power-btn" onclick="insertSquare()"> <!-- Botón de potencia -->
+        x<sup>2</sup> <!-- Muestra x al cuadrado -->
+      </button> <!-- Termina el botón de potencia -->
+    </div> <!-- Fin de la botonera -->
+
+
+    <div class="hint"> <!-- Texto de ayuda -->
+      Consejo: para sen, cos y tan, usa radianes. Ejemplo: sin( π / 2). <!-- Explica el uso de trigonometría -->
+    </div> <!-- Fin del texto de ayuda -->
+  </div> <!-- Fin del contenedor principal -->
+
+
+  <script> // Comienza el JavaScript
+    const display = document.getElementById('display'); // Guarda la referencia a la pantalla
+    let rawExpression = ''; // Guarda la expresión interna que se calcula
+    let lastResult = ''; // Guarda el último resultado obtenido
+    let justCalculated = false; // Indica si se acaba de calcular
+
+    function renderDisplay() { // Función para pintar la expresión en pantalla
+      display.innerHTML = rawExpression // Inserta la expresión transformada en HTML
+        .replaceAll('^2', '<sup>2</sup>') // Convierte ^2 en superíndice
+        .replaceAll('Math.PI', 'π') // Cambia Math.PI por π
+        .replaceAll('Math.E', 'e') // Cambia Math.E por e
+        .replaceAll('Math.sin(', 'sin(') // Muestra sin de forma más limpia
+        .replaceAll('Math.cos(', 'cos(') // Muestra cos de forma más limpia
+        .replaceAll('Math.tan(', 'tan(') // Muestra tan de forma más limpia
+        .replaceAll('Math.sqrt(', '√(') // Muestra raíz cuadrada de forma visual
+        .replaceAll('Math.log10(', 'log(') // Muestra log base 10 de forma abreviada
+        .replaceAll('Math.log(', 'ln('); // Muestra log natural como ln
+    } // Fin de renderDisplay
+
+
+    function autoClearIfNeeded(nextChar) { // Limpia automáticamente si ya se calculó un resultado
+      if (!justCalculated) return; // Si no se acaba de calcular, no hace nada
+      if (/^[0-9.(]/.test(nextChar) || /^[+\-*/]$/.test(nextChar)) { // Si empieza una nueva operación
+        rawExpression = ''; // Borra la expresión anterior
+        justCalculated = false; // Quita el estado de "resultado reciente"
+      } // Fin de la condición
+    } // Fin de autoClearIfNeeded
+
+
+    function insertText(text) { // Inserta texto en la expresión
+      autoClearIfNeeded(text); // Borra lo anterior si corresponde
+      rawExpression += text; // Añade el texto al final
+      justCalculated = false; // Ya no estamos solo viendo un resultado
+      renderDisplay(); // Actualiza la pantalla
+    } // Fin de insertText
+
+
+    function insertSquare() { // Inserta la potencia al cuadrado
+      autoClearIfNeeded('^'); // Comprueba si debe borrar el resultado previo
+      rawExpression += '^2'; // Añade el exponente 2 internamente
+      justCalculated = false; // Ya no está en estado de resultado final
+      renderDisplay(); // Redibuja la pantalla
+    } // Fin de insertSquare
+
+
+    function insertAnswer() { // Inserta el último resultado
+      if (rawExpression !== '') { // Si hay algo escrito en pantalla
+        rawExpression = ''; // Borra lo que hubiera
+      } // Fin de la limpieza previa
+      if (lastResult !== '') { // Si existe un último resultado guardado
+        rawExpression = String(lastResult); // Pone el último resultado como expresión actual
+        justCalculated = false; // Sale del estado de resultado reciente
+        renderDisplay(); // Actualiza la pantalla
+      } // Fin de la inserción del resultado
+    } // Fin de insertAnswer
+
+
+    function clearAll() { // Limpia toda la calculadora
+      rawExpression = ''; // Borra la expresión
+      justCalculated = false; // Resetea el estado
+      renderDisplay(); // Refresca la pantalla
+    } // Fin de clearAll
+
+
+    function backspace() { // Borra el último carácter
+      if (!rawExpression) return; // Si no hay nada, no hace nada
+      if (rawExpression.endsWith('^2')) { // Si el final es ^2
+        rawExpression = rawExpression.slice(0, -2); // Borra esos dos caracteres
+      } else { // Si no termina en ^2
+        rawExpression = rawExpression.slice(0, -1); // Borra un solo carácter
+      } // Fin de la condición
+      justCalculated = false; // Ya no se considera resultado reciente
+      renderDisplay(); // Actualiza la pantalla
+    } // Fin de backspace
+
+
+    function toEvalExpression(expr) { // Convierte la expresión visible en expresión evaluable
+      return expr // Devuelve una versión preparada para evaluar
+        .replaceAll('^2', '**2') // Convierte ^2 en potencia real
+        .replaceAll('π', 'Math.PI') // Convierte π en Math.PI
+        .replaceAll('e', 'Math.E'); // Convierte e en Math.E
+    } // Fin de toEvalExpression
+
+
+function calculate() { // Función que calcula el resultado de la expresión
+  if (rawExpression.length === 0) { // Comprueba si no hay nada escrito en la pantalla
+    display.innerHTML = 'Error'; // Muestra el texto "Error" en la pantalla
+    setTimeout(() => { // Espera 1200 milisegundos antes de ejecutar lo de dentro
+      if (display.innerHTML === 'Error') { // Comprueba que siga escrito "Error"
+        display.innerHTML = ''; // Borra el mensaje de error de la pantalla
+      } // Cierra el if que revisa si sigue estando el error
+    }, 1200); // Indica que la función anterior se ejecute tras 1,2 segundos
+    return; // Sale de la función para que no intente calcular nada
+  } // Cierra la comprobación de si la pantalla está vacía
+
+  try { // Intenta calcular la operación sin que haya errores
+    const evalExpression = toEvalExpression(rawExpression); // Convierte la expresión visual en una expresión válida para JavaScript
+    const result = Function('"use strict"; return (' + evalExpression + ')')(); // Evalúa la operación y guarda el resultado
+    lastResult = result; // Guarda el resultado para usarlo luego con Ans
+    rawExpression = String(result); // Convierte el resultado a texto y lo guarda como expresión actual
+    justCalculated = true; // Indica que se acaba de hacer un cálculo
+    renderDisplay(); // Vuelve a pintar la pantalla con el nuevo contenido
+  } catch (error) { // Si ocurre cualquier problema al calcular
+    rawExpression = ''; // Limpia la expresión interna
+    justCalculated = false; // Indica que ya no hay un resultado recién calculado
+    display.innerHTML = 'Error'; // Muestra el mensaje de error en la pantalla
+    setTimeout(() => { // Espera un tiempo antes de borrar el error
+      if (display.innerHTML === 'Error') { // Verifica que el error siga visible
+        display.innerHTML = ''; // Borra el error después del tiempo indicado
+      } // Cierra el if que comprueba el error
+    }, 1200); // Borra el error pasados 1200 milisegundos
+  } // Cierra el catch
+} // Cierra la función calculate
+
+    document.addEventListener('keydown', (e) => { // Escucha las teclas pulsadas
+      if (e.key === 'Enter') calculate(); // Enter calcula
+      if (e.key === 'Escape') clearAll(); // Escape limpia
+      if (/^[0-9.+\-*/() ]$/.test(e.key)) insertText(e.key); // Inserta teclas válidas
+      if (e.key === 'Backspace') backspace(); // Backspace borra
+    }); // Fin del evento de teclado
+
+    renderDisplay(); // Dibuja la pantalla al cargar la página
+  </script> <!-- Termina el JavaScript -->
+</body> <!-- Termina el cuerpo -->
+</html> <!-- Cierra el documento HTML -->

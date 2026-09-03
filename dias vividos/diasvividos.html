@@ -1,0 +1,210 @@
+<!--Días Vividos HTML, JavaScript y CSS
+--------------------------------------->
+<!-- ==========================================
+     1. ESTRUCTURA VISUAL (HTML)
+     ========================================== -->
+
+<!-- Contenedor principal de la calculadora -->
+<div class="calc-vividos-container">
+    <!-- Título principal de la tarjeta -->
+    <h2 class="calc-title">¿Cuántos días llevas viviendo?</h2>
+    
+    <!-- Grupo que junta la etiqueta informativa con el campo de entrada -->
+    <div class="calc-form-group">
+        <!-- Texto explicativo conectado al campo de abajo mediante el 'for' -->
+        <label for="wp_birthdate">Introduce tu fecha de nacimiento:</label>
+        <!-- Campo para seleccionar fecha. El 'required' le dice al navegador que es obligatorio -->
+        <input type="date" id="wp_birthdate" required="">
+    </div>
+    
+    <!-- Botón que, al hacer clic (onclick), dispara la función de JavaScript 'wpCalcularDias()' -->
+    <button type="button" class="calc-btn" onclick="wpCalcularDias()">Calcular días</button>
+    
+    <!-- Contenedor vacío donde JavaScript meterá el resultado o los mensajes de error -->
+    <div id="wp_result" class="calc-result-box"></div>
+</div>
+
+
+<!-- ==========================================
+     2. ESTILOS Y DISEÑO (CSS)
+     ========================================== -->
+<style>
+    /* Estilos del contenedor de la tarjeta principal */
+    .calc-vividos-container {
+        background-color: #A8A9FF; /* Fondo blanco*/ 
+        padding: 3rem; /* Espacio interior alrededor de los elementos */
+        border-radius: 10px; /* Esquinas redondeadas suaves */
+        box-shadow: 0 15px 12px rgba(8, 15, 105, 1); /* Sombra sutil para dar efecto de flotado */
+        max-width: 450px; /* Ancho máximo para que no se desparrame en pantallas grandes */
+        margin: 4rem auto; /* Centra la tarjeta horizontalmente en la pantalla */
+        text-align: center; /* Centra los textos por defecto */
+        border: 2px solid #7979B5; /* Borde gris muy claro */
+        font-family: system-ui, -apple-system, sans-serif; /* Tipografía limpia y moderna */
+    }
+    
+    /* Estilos del título principal */
+    .calc-title {
+        font-size: 1.4rem !important; /* Tamaño de letra destacado (!important asegura compatibilidad) */
+        margin-top: 0 !important; /* Elimina espacio superior */
+        margin-bottom: 1rem !important; /* Espacio debajo del título */
+        color: #ffffff; /* Color azul oscuro/grisáceo elegante */
+    }
+    
+    /* Contenedor del formulario */
+    .calc-form-group {
+        margin-bottom: 1.8rem; /* Separa el campo de texto del botón inferior */
+        text-align: center; /* Alinea la etiqueta y el input a la izquierda */
+    }
+    
+    /* Estilos de la etiqueta (Label) */
+    .calc-form-group label {
+        display: block; /* Hace que ocupe toda la línea para que el input baje */
+        margin-bottom: 1rem; /* Espacio entre el texto y el input */
+        font-weight: 500; /* Letra ligeramente seminegrita */
+        font-size: 0.95rem; /* Tamaño de letra sutilmente más pequeño */
+        color: #ffffff; /*Color de la fuente en blanco*/
+    }
+    
+    /* Estilos específicos para el campo de tipo fecha */
+    .calc-vividos-container input[type="date"] {
+        width: 100%; /* Ocupa todo el ancho disponible */
+        padding: 0.75rem; /* Relleno interno para comodidad en móviles */
+        border: 2px solid #8686B5; /* Borde gris */
+        border-radius:0px; /* Bordes ligeramente redondeados */
+        font-size: 1rem; /* Tamaño de letra estándar */
+        box-sizing: border-box; /* Evita que el padding deforme el ancho total */
+        background-color:#d185e8; /*Color de fondo*/
+        text-align: center;/*Texto centrado*/
+        color: #ffffff;/*Color del texto en blanco*/
+    }
+    
+    /* Estilos del botón en estado normal */
+    .calc-btn {
+        width: 100%; /* Botón de ancho completo */
+        background-color: #9929D6; /* Azul llamativo */
+        color: white !important; /* Texto en blanco obligatorio */
+        border: none; /* Quita el borde por defecto */
+        padding: 0.75rem; /* Espaciado interno */
+        font-size: 1rem; /* Tamaño de letra */
+        font-weight: 600; /* Texto en negrita */
+        border-radius: 20px; /* Bordes redondeados */
+        cursor: pointer; /* Cambia el cursor a una mano al pasar encima */
+        transition: background-color 0.2s; /* Animación suave al cambiar de color */
+    }
+    
+    /* Efecto cuando el usuario pasa el ratón por encima del botón */
+    .calc-btn:hover {
+        background-color: #70209E; /* El azul se vuelve un poco más oscuro */
+        color:#b611a9 !important; /*Cambio de color con *important* porque está asignado también en button*/
+    }
+    
+    /* Caja de resultados (oculta por defecto) */
+    .calc-result-box {
+        margin-top: 1.5rem; /* Separación respecto al botón */
+        padding: 1rem; /* Espacio interno */
+        border-radius: 6px; /* Bordes redondeados */
+        background-color: #8E8FED; /* Fondo gris claro neutral */
+        display: none; /* Oculta la caja hasta que se calcule el resultado */
+        color:white; /*Cambio de color a blanco*/
+    }
+    
+    /* Estilo extra que se añade con JS si hay un error de validación */
+    .calc-result-box.error {
+        background-color: #1ba716; /* Fondo rojo claro de advertencia */
+        color: #e8ea6e; /* Texto granate/rojo oscuro */
+    }
+    
+    /* Estilo para el número gigante de días calculados */
+    .calc-days-number {
+        font-size: 2.5rem; /* Tamaño de letra muy grande e impactante */
+        font-weight: 800; /* Letra extra negrita */
+        color: #9929D6; /* Color azul idéntico al botón */
+        margin: 0.5rem 0; /* Margen arriba y abajo */
+    }
+</style>
+
+
+<!-- ==========================================
+     3. LÓGICA Y FUNCIONAMIENTO (JAVASCRIPT)
+     ========================================== -->
+<script>
+    // Evento que se ejecuta automáticamente cuando el HTML está completamente cargado
+    document.addEventListener("DOMContentLoaded", function() {
+        // Busca el input de la fecha de nacimiento en el documento
+        const inputFecha = document.getElementById('wp_birthdate');
+        // Si el input existe en la página...
+        if(inputFecha) {
+            // Bloqueamos el calendario para que hoy sea la fecha máxima seleccionable (evita fechas futuras)
+            inputFecha.max = new Date().toISOString().split("T")[0];
+        }
+    });
+
+    // Función principal que se activa al pulsar el botón "Calcular días"
+    function wpCalcularDias() {
+        // Captura el valor de la fecha introducida por el usuario
+        const inputFecha = document.getElementById('wp_birthdate').value;
+        
+        // Validación 1: Si el campo está vacío...
+        if (!inputFecha) {
+            // Muestra mensaje de error (pasándole 'true' a 'esError') y corta la función
+            wpMostrarResultado("Por favor, selecciona una fecha válida.", true);
+            return; 
+        }
+
+        // Convierte el texto del input ("AAAA-MM-DD") en un objeto de Fecha real de JS
+        const fechaNacimiento = new Date(inputFecha);
+        // Crea un objeto con la fecha y hora exacta de este instante
+        const fechaActual = new Date(); //pilla la fecha actual del sistema
+
+        // Normalización: Reseteamos las horas, minutos, segundos y milisegundos a 0.
+        // Se hace para comparar días limpios sin que afecte la hora en la que pulsas el botón.
+        fechaNacimiento.setHours(0, 0, 0, 0);
+        fechaActual.setHours(0, 0, 0, 0);
+
+        // Validación 2: Si la fecha de nacimiento es mayor que la actual...
+        if (fechaNacimiento > fechaActual) {
+            // Muestra error y corta la función
+            wpMostrarResultado("La fecha no puede ser posterior a hoy.", true);
+            return;
+        }
+
+        // Restamos las fechas. JS devuelve automáticamente la diferencia en milisegundos.
+        const diferenciaMilisegundos = fechaActual - fechaNacimiento;
+        
+        // Traducimos milisegundos a días: (1000ms * 60s * 60m * 24h) = milisegundos en un día.
+        // Math.floor redondea hacia abajo para obtener días enteros completos.
+        const diasVividos = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60 * 24));
+        
+        // Formatea el número según el idioma del navegador (ej: convierte 12500 en 12.500)
+        const diasFormateados = new Intl.NumberFormat().format(diasVividos);
+
+        // Prepara la estructura HTML con el resultado final
+        const mensaje = `
+            <div>Llevas en este mundo:</div>
+            <div class="calc-days-number">${diasFormateados}</div>
+            <div>días espectaculares.</div>
+        `;
+        
+        // Pinta el resultado en pantalla (pasando 'false' porque el cálculo es correcto)
+        wpMostrarResultado(mensaje, false);
+    }
+
+    // Función auxiliar que gestiona visualmente la caja de resultados
+    function wpMostrarResultado(contenido, esError) {
+        // Busca la caja de destino en el HTML
+        const resultDiv = document.getElementById('wp_result');
+        // Inyecta el contenido dinámico
+        resultDiv.innerHTML = contenido;
+        // Muestra la caja cambiando su estilo a visible ('block')
+        resultDiv.style.display = 'block';
+        
+        // Si es un error...
+        if (esError) {
+            // Añade la clase CSS '.error' para volver la caja roja
+            resultDiv.classList.add('error');
+        } else {
+            // Si todo está bien, quita la clase roja para que mantenga el fondo gris neutro
+            resultDiv.classList.remove('error');
+        }
+    }
+</script>

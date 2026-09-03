@@ -1,0 +1,217 @@
+<!--Calculadora-->
+<!DOCTYPE html> <!-- Indica que el documento es HTML5 -->
+<html lang="es"> <!-- Comienza el documento y especifica que está en español -->
+
+<head>
+
+    <!-- Codificación de caracteres -->
+    <meta charset="UTF-8">
+
+    <!-- Hace que la página sea adaptable a móviles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Título de la pestaña del navegador -->
+    <title>Calculadora</title>
+</head>
+<body>
+
+<!-- Contenedor principal -->
+<div class="calculadora">
+
+    <!-- Pantalla de la calculadora -->
+    <input type="text" id="pantalla" readonly>
+
+    <!-- Contenedor de botones -->
+    <div class="botones">
+
+        <!-- Limpia toda la pantalla -->
+        <button class="accion" onclick="limpiar()">CE</button>
+
+        <!-- Borra el último carácter -->
+        <button class="accion" onclick="borrar()">⌫</button>
+
+        <!-- Añade el operador porcentaje -->
+        <button class="operador" onclick="agregar('%')">%</button>
+
+        <!-- División -->
+        <button class="operador" onclick="agregar('/')">÷</button>
+
+        <!-- Números -->
+        <button onclick="agregar('7')">7</button>
+        <button onclick="agregar('8')">8</button>
+        <button onclick="agregar('9')">9</button>
+
+        <!-- Multiplicación -->
+        <button class="operador" onclick="agregar('*')">×</button>
+
+        <button onclick="agregar('4')">4</button>
+        <button onclick="agregar('5')">5</button>
+        <button onclick="agregar('6')">6</button>
+
+        <!-- Resta -->
+        <button class="operador" onclick="agregar('-')">−</button>
+
+        <button onclick="agregar('1')">1</button>
+        <button onclick="agregar('2')">2</button>
+        <button onclick="agregar('3')">3</button>
+
+        <!-- Suma -->
+        <button class="operador" onclick="agregar('+')">+</button>
+
+        <!-- El botón 0 ocupa dos columnas -->
+        <button class="cero" onclick="agregar('0')">0</button>
+
+        <!-- Punto decimal -->
+        <button onclick="agregar('.')">.</button>
+
+        <!-- Realiza el cálculo -->
+        <button class="igual" onclick="calcular()">=</button>
+
+    </div>
+
+</div>
+
+<style>
+    *{
+        margin: 10;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .calculadora{
+
+        background-color: #512856;
+        padding: 20px;
+        border-radius: 20px;
+        width: 340px;
+        box-shadow: 0 15px 35px rgba(36, 38, 103, 0.404);
+    
+    }
+
+    #pantalla{
+
+        width: 100%; /*Ancho*/
+        height: 70px; /*Altura*/
+
+        font-size: 2rem; /*Tamaño del texto*/
+        
+        text-align: right;/*Texto a la derecha*/
+
+        padding: 10px;
+
+        border: none;
+        outline: none;
+
+        border-radius: 10px;
+
+        margin-bottom: 15px;
+
+        background-color: #eceae8;
+    }
+    .botones{
+
+        display: grid; /*Añade el formato de cuadrícula*/
+        grid-template-columns: repeat(4,1fr); /*Pone la cuadrícula en 4 columnas*//*fr para fijar el valor*/
+        gap: 10px; /*Espacio entre botones*/
+    }
+        button{
+            height:65px;
+            border:none;
+            border-radius: 12px;
+
+            font-size: 1.4rem;
+
+            cursor: pointer;
+
+            background-color: #e801d5;
+
+            transition: .2s;
+    }
+
+    button:hover{
+        transform:scale(1.05);/*Efecto de agrandar al pasar el ratón*/
+        background-color: #b100a2;
+    }
+    .accion{
+        background-color: #bb6ec5;
+    }
+    .accion:hover{
+        background-color: #9d5ca5;
+    }
+    .operador{
+        background-color: #a916bd;
+    }
+    .operador:hover{
+        background-color:#8c139c;
+    }
+    .igual{
+        background-color: #f6afff;
+    }
+    .igual:hover{
+        background-color: #c38bcb;
+    }
+    .cero{
+        background-color: #bd16a7;
+        grid-column:span 2;
+    }
+    .cero:hover{
+        background-color: #8a207c;
+    }
+    body{
+        background:#ffffff;
+
+        display:flex;
+        justify-content: center;
+        align-items: center;
+
+        height: 100vh;
+    }
+    
+</style>
+
+</head>
+
+<script>
+
+    const pantalla= document.getElementById("pantalla") //busca el id pantalla //consigue el elemento por ID
+
+     function limpiar(){
+        pantalla.value=""; //borra todos los digitos
+     }
+     function agregar(valor){
+        pantalla.value += valor; //añade los elementos asignados al agregar de dentro del valor dentro de la pantalla (+= agregar)
+     }
+     function borrar(){
+        pantalla.value = pantalla.value.slice(0,-1); //Borra el ultimo digito //slice funcion predeterminada de js para borrar el ultimo digito
+     }
+     function calcular(){
+        try{
+            pantalla.value = eval(pantalla.value); //eval interpreta todo lo puesto como una operación matemática //pasa lo de la pantalla, de texto a una operación matemática
+        }
+        catch{
+            pantalla.value="Error"; // si es incorrecto aparece Error
+            setTimeout(function(){
+                pantalla.value=""
+            },3000);
+        }
+     }
+     document.addEventListener("keydown",function(e){ //detecta cuando se pulsa una tecla "keydown"
+        if("012345789+-*/.%".includes(e.key)){ //si (if) detecta que se ha presionado la tecla se añade
+            agregar(e.key); //e.key añade la letra E al final del valor si el resultado es demasiado grande
+        }
+        if(e.key==="Enter"){
+            calcular();
+        }
+        if(e.key==="Backspace"){
+            borrar();
+        }
+        if(e.key==="Escape"){
+            limpiar();
+        }
+     }
+
+    )
+</script>
+</body>
+</html>

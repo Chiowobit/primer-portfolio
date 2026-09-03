@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+<meta charset="utf-8">
+<script src="js/activities/common/jquery-1.9.0.min.js"></script>
+<title>Imprimir Sopa de letras: Sopa de Letras. Servicios Públicos (5º primaria - otros - sopa de letras - sopa - letras)</title>
+<meta name="description" content="Imprimir Recursos educativos (Sopa de letras): Sopa de Letras. Servicios Públicos (5º primaria - otros - sopa de letras - sopa - letras) - Sopa de Letras. Servicios Públicos">
+<script src="js/data.js"></script>
+<script src="js/activities/SOPA/print.js"></script>
+<link rel="stylesheet" type="text/css" href="css/printSOPA.css">
+<script>
+    $(document).data("loadingXmlError","ERROR:<br>Uno de los archivos multimedia de la actividad no se ha subido correctamente");
+    $(document).data("idActividad","5182148");
+    $(document).data("PRMO","2");
+</script></head>
+<body>
+<div style="display:none;" id="idActividad">5182148</div>
+<div id="all">
+    <div id="header">
+                <div class="logo">
+            <a href="//es.educaplay.com/" target="_blank"><img src="img/mail-logo-educaplay.png" alt="Educaplay"></a>
+        </div>
+                <div class="datosActividad">
+                        <div class="titAct"><a href="//es.educaplay.com/recursos-educativos/5182148-sopa_de_letras_tributario.html" target="_blank"><h1 id="txtTitAct"></h1></a></div>
+            <span id="textoAutor"></span><a href="//es.educaplay.com/usuario/2694019-jose_luis/" target="_blank"><span id="nombreAutor"></span></a> 
+                    </div>
+        <div class="clear"></div>
+    </div>
+        <div id="changeType" style="margin-bottom:2rem;">
+	<label for="pistas" id="pistasL" class="modoSel">
+	<input type="radio" name="radio" id="pistas" value="Pistas">
+	<span id="pistasLS"></span></label>
+	<label for="huecos" id="huecosL">
+	<input type="radio" name="radio" id="huecos" value="Huecos">
+	<span id="huecosLS"></span></label>
+	<label for="noPistas" id="noPistasL">
+	<input type="radio" name="radio" id="noPistas" value="Sin pistas">
+	<span id="noPistasLS"></span></label>
+</div>
+<div id="actividad">
+	<div id="lienzo"></div>
+</div>
+<div id="pistas">
+	<div class="col colizq">
+		<div class="listPistas"><ul id="pistasDerecha"></ul></div>
+	</div>
+	<div class="col colDer">
+		<div class="listPistas"><ul id="pistasIzquierda"></ul></div>
+	</div>
+	<div class="clear"></div>
+</div></div></body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Lista de la Compra</title>
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background: #f4f4f4;
+}
+
+#container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+input, button {
+    padding: 10px;
+    margin: 5px 0;
+    width: 100%;
+    font-size: 16px;
+}
+
+button {
+    cursor: pointer;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.borrar {
+    background: #59ff4d;
+    color: black;
+    font-weight: bold;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: #e8e8e8;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.delete {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    max-width: 50%;
+}
+
+#producto, #precio {
+    width: 575px;
+    padding: 10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="container">
+
+<h1>Lista de la Compra</h1>
+
+<h2>
+    Total:
+    <span id="total">0.00</span> €
+</h2>
+
+<input
+    type="text"
+    id="producto"
+    placeholder="Producto"
+>
+
+<input
+    type="number"
+    id="precio"
+    placeholder="Precio (€)"
+    step="0.01"
+>
+
+<button onclick="agregarItem()">Agregar</button>
+
+<button onclick="descargarJSON()">
+    Descargar fichero
+</button>
+
+<button onclick="document.getElementById('fileInput').click()">
+    Cargar datos
+</button>
+
+<button class="borrar" onclick="limpiar()">Limpiar lista</button>
+
+<input
+    type="file"
+    id="fileInput"
+    accept="application/json"
+    style="display:none"
+    onchange="cargarJSON(event)">
+
+<h2>Items</h2>
+<ul id="lista"></ul>
+</div>
+<script>
+
+let lista = [];
+
+window.onload = () => {
+
+    const guardados = localStorage.getItem("listaCompra");
+
+    const totalGuardado = localStorage.getItem("totalCompra");
+
+    if (guardados) {
+
+        lista = JSON.parse(guardados);
+
+        mostrarLista();
+    }
+
+    if (totalGuardado) {
+
+        document.getElementById("total").textContent = totalGuardado;
+
+    } else {
+
+        calcularTotal();
+    }
+};
+
+
+const productoInput = document.getElementById("producto");
+const precioInput = document.getElementById("precio");
+
+
+[productoInput, precioInput].forEach(input => {
+
+    input.addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            agregarItem();
+        }
+    });
+});
+
+
+function agregarItem() {
+
+    const producto =
+        document.getElementById("producto").value.trim();
+
+
+    const precio =
+        parseFloat(document.getElementById("precio").value);
+
+
+    if (producto === "" || isNaN(precio)) return;
+
+
+    lista.push({ producto, precio });
+
+
+    guardar();
+
+
+    mostrarLista();
+
+
+    calcularTotal();
+
+
+    document.getElementById("producto").value = "";
+
+
+    document.getElementById("precio").value = "";
+}
+
+
+
+function limpiar() {
+
+    if (!confirm("¿Seguro que quieres borrar toda la lista?")) return;
+
+
+    lista = [];
+
+
+    mostrarLista();
+
+
+    calcularTotal();
+
+
+    localStorage.removeItem("listaCompra");
+
+
+    localStorage.removeItem("totalCompra");
+
+
+    document.getElementById("producto").value = "";
+
+
+    document.getElementById("precio").value = "";
+}
+
+
+document.addEventListener("keydown", function(e) {
+
+    if (e.key === "Escape") {
+
+        limpiar();
+    }
+
+});
+
+
+function eliminarItem(index) {
+
+
+    lista.splice(index, 1);
+
+
+    guardar();
+
+
+    mostrarLista();
+
+
+    calcularTotal();
+
+}
+
+
+
+function mostrarLista() {
+
+
+    const ul = document.getElementById("lista");
+
+
+    ul.innerHTML = "";
+
+
+    lista.forEach((item, index) => {
+
+
+        const li = document.createElement("li");
+
+
+        li.innerHTML = `
+            ${item.producto} a ${item.precio.toFixed(2)} €
+            <button
+                class="delete"
+                onclick="eliminarItem(${index})"
+            >
+                Eliminar producto
+            </button>
+        `;
+
+
+        ul.appendChild(li);
+
+    });
+
+}
+
+
+
+function guardar() {
+
+
+    localStorage.setItem(
+        "listaCompra",
+        JSON.stringify(lista)
+    );
+
+}
+
+
+
+function calcularTotal() {
+
+
+    const total = lista.reduce(
+        (suma, item) => suma + item.precio,
+        0
+    );
+
+
+    document.getElementById("total").textContent =
+        total.toFixed(2);
+
+
+    localStorage.setItem(
+        "totalCompra",
+        total.toFixed(2)
+    );
+
+}
+
+
+
+function descargarJSON() {
+
+
+    const fecha = new Date();
+
+
+    const yyyy = fecha.getFullYear();
+
+
+    const mm = String(fecha.getMonth() + 1).padStart(2, "0");
+
+
+    const dd = String(fecha.getDate()).padStart(2, "0");
+
+
+    const hh = String(fecha.getHours()).padStart(2, "0");
+
+
+    const min = String(fecha.getMinutes()).padStart(2, "0");
+
+
+    const ss = String(fecha.getSeconds()).padStart(2, "0");
+
+
+    const nombreArchivo =
+        `lista_compra-${yyyy}-${mm}-${dd}_${hh}-${min}-${ss}.json`;
+
+
+
+    const blob = new Blob(
+        [JSON.stringify(lista, null, 2)],
+        {
+            type: "application/json"
+        }
+    );
+
+
+    const url = URL.createObjectURL(blob);
+
+
+    const a = document.createElement("a");
+
+
+    a.href = url;
+
+
+    a.download = nombreArchivo;
+
+
+    a.click();
+
+
+    URL.revokeObjectURL(url);
+}function cargarJSON(event) {
+
+    const file = event.target.files[0];
+
+
+    if (!file) return;
+
+
+    const reader = new FileReader();
+
+
+    reader.onload = function(e) {
+
+
+        try {
+
+
+            const datos = JSON.parse(e.target.result);
+
+
+            if (!Array.isArray(datos)) {
+
+
+                alert("El archivo no contiene un formato válido.");
+
+
+                return;
+            }
+
+
+            lista = datos;
+
+
+            guardar();
+
+
+            mostrarLista();
+
+
+            calcularTotal();
+
+
+            alert("Datos cargados correctamente.");
+
+
+        } catch (err) {
+
+
+            alert("Error al leer el archivo JSON.");
+
+        }
+
+    };
+
+
+    reader.readAsText(file);
+
+}
+
+</script>
+
+</body>
+
+</html>

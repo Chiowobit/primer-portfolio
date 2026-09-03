@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tecla</title>
+
+  <style>
+    :root {
+      --fondo: #EDEEF2;
+      --fondogris: #E4E6EE;
+      --superficie: #FFFFFF;
+      --tinta: #14172B;
+      --tintasuave: #5B6178;
+      --acento: #5B4BE8;
+      --acentohover: #4A3AD6;
+      --acentosuave: #E9E6FF;
+      --acentooscuro: #A99EFF;
+      --textooscuro: #B7BCD2;
+      --borde: #D7D9E3;
+      --bordeoscuro: #3A4060;
+
+      --titular: "Space Grotesk", Arial, sans-serif;
+      --textocorrido: "IBM Plex Sans", Arial, sans-serif;
+      --etiquetas: "IBM Plex Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--fondo);
+      color: var(--tinta);
+      font-family: var(--textocorrido);
+      line-height: 1.5;
+    }
+
+    main {
+      display: block;
+    }
+
+    .cabecera {
+      background: var(--superficie);
+      border-bottom: 1px solid var(--borde);
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .container,
+    .contenedor {
+      width: min(1100px, 90%);
+      margin: 0 auto;
+    }
+
+    .cabecera .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .marca {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .menu {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .menu a {
+      color: var(--tinta);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .menu a:hover {
+      color: var(--acento);
+    }
+
+    .portada {
+      padding: 90px 0 50px;
+    }
+
+    .antetitulo {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: var(--tintasuave);
+      font-family: var(--etiquetas);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.85rem;
+    }
+
+    .portada h1 {
+      font-family: var(--titular);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height: 0.95;
+      margin: 12px 0 20px;
+      max-width: 10ch;
+    }
+
+    .portada h1 span {
+      color: var(--acento);
+    }
+
+    .portada p {
+      max-width: 60ch;
+      color: var(--tintasuave);
+      font-size: 1.05rem;
+    }
+
+    .acciones {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+.comprar {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      background: var(--acento);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--textocorrido);
+      max-width: fit-content;
+    }
+    .boton1,
+    .boton2 {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-family: var(--textocorrido);
+    }
+
+    .boton1 {
+      background: var(--acento);
+      color: white;
+    }
+
+    .boton1:hover {
+      background: var(--acentohover);
+    }
+
+    .boton2 {
+      background: var(--superficie);
+      color: var(--tinta);
+      border: 1px solid var(--borde);
+    }
+
+    .boton2:hover {
+      border-color: var(--acento);
+      color: var(--acento);
+    }
+
+    .portada-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+      gap: 40px;
+      align-items: center;
+    }
+
+    .portada-copy {
+      max-width: 55rem;
+    }
+
+    .hero-image {
+      width: 100%;
+      height: auto;
+      min-height: 320px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, var(--acentosuave), var(--superficie));
+      border: 1px solid var(--borde);
+      display: block;
+      object-fit: cover;
+    }
+
+    .teclados-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.2fr);
+      gap: 32px;
+      align-items: start;
+      margin-top: 40px;
+    }
+
+    .teclados-img {
+      display: grid;
+      gap: 16px;
+    }
+
+    .texto-imagen {
+      margin: 0;
+      color: var(--tintasuave);
+      font-size: 1rem;
+      max-width: 44rem;
+    }
+
+    .teclados-info {
+      display: grid;
+      gap: 18px;
+    }
+
+    .precio {
+      font-family: var(--titular);
+      font-size: 1.4rem;
+      color: var(--acento);
+      margin: 0;
+    }
+
+    .carrito {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      background: var(--acento);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--textocorrido);
+      max-width: fit-content;
+    }
+
+    .proceso {
+      padding: 70px 0 80px;
+    }
+
+    .proceso h2 {
+      margin: 8px 0 24px;
+      font-family: var(--titular);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+    }
+
+    .proceso-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .proceso article {
+      padding: 0 6px 0 0;
+      min-height: auto;
+    }
+
+    .proceso article h3 {
+      margin: 14px 0 10px;
+      font-family: var(--titular);
+      font-size: 1.1rem;
+    }
+
+    .proceso article p {
+      color: var(--tintasuave);
+    }
+
+    .decisiones {
+      padding: 20px 0 80px;
+    }
+
+    .decisiones h2 {
+      margin: 8px 0 24px;
+      font-family: var(--titular);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+    }
+
+    .decisiones-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .preguntas-encabezado {
+      width: min(760px, 100%);
+      margin: 0 auto 0 18vw;
+      padding-bottom: 12px;
+    }
+
+    .preguntas-lista {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      width: min(760px, 100%);
+      margin: 0 auto 0 18vw;
+      border-top: 1px solid var(--borde);
+    }
+
+    .pregunta-item {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--borde);
+      width: 100%;
+      text-align: left;
+    }
+
+    .pregunta-item h3 {
+      margin: 0 0 8px;
+      font-family: var(--titular);
+      font-size: 1rem;
+      color: var(--tinta);
+      font-weight: 700;
+    }
+
+    .pregunta-item p {
+      margin: 0;
+      color: var(--tintasuave);
+      line-height: 1.6;
+    }
+
+    .decisiones article {
+      padding: 22px 20px 24px;
+      border: 2px solid var(--tinta);
+      border-radius: 20px;
+      background: linear-gradient(180deg, var(--superficie) 0%, #f2f3f7 100%);
+      box-shadow: 0 8px 24px rgba(20, 23, 43, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .decisiones article::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 8px;
+      background: var(--tinta);
+      border-radius: 0 0 18px 18px;
+    }
+
+    .decisiones article h3 {
+      margin: 0 0 8px;
+      font-family: var(--titular);
+      font-size: 1.1rem;
+    }
+
+    .decisiones article p {
+      color: var(--tintasuave);
+    }
+
+    .tabla-section {
+      padding: 20px 0 80px;
+    }
+
+    .tabla-section h2 {
+      margin: 8px 0 20px;
+      font-family: var(--titular);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+    }
+
+    .tabla-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .tabla-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0;
+      border-top: 1px solid var(--borde);
+      border-left: 1px solid var(--borde);
+    }
+
+    .tabla-item {
+      padding: 18px 16px;
+      border-right: 1px solid var(--borde);
+      border-bottom: 1px solid var(--borde);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 140px;
+    }
+
+    .tabla-item h3 {
+      margin: 0;
+      font-family: var(--titular);
+      font-size: 0.95rem;
+      color: var(--tinta);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .tabla-item p {
+      margin: 0;
+      color: var(--textooscuro);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .opiniones {
+      padding: 20px 0 80px;
+    }
+
+    .opiniones h2 {
+      margin: 8px 0 24px;
+      font-family: var(--titular);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+    }
+
+    .opiniones-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .opiniones article {
+      padding: 22px 20px;
+      border: 1px solid var(--borde);
+      border-top: 4px solid var(--acento);
+      border-radius: 18px;
+      background: var(--superficie);
+      box-shadow: 0 8px 24px rgba(20, 23, 43, 0.06);
+    }
+
+    .opiniones article p {
+      color: var(--tintasuave);
+      margin: 0 0 8px;
+    }
+
+    .opiniones article strong {
+      color: var(--tinta);
+    }
+
+    .contacto {
+      background: var(--acento);
+      padding: 60px 0 80px;
+      color: white;
+      text-align: center;
+    }
+
+    .contacto h2 {
+      font-family: var(--titular);
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      margin: 0 0 16px;
+      max-width: 50ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .contacto > div > p {
+      margin: 0 0 28px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      max-width: 60ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .contacto form {
+      display: flex;
+      gap: 12px;
+      max-width: 500px;
+      margin: 0 auto;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .contacto input {
+      padding: 14px 18px;
+      border: 0;
+      border-radius: 8px;
+      font-family: var(--textocorrido);
+      min-width: 240px;
+      background: white;
+      color: var(--tinta);
+    }
+
+    .contacto input::placeholder {
+      color: var(--borde);
+    }
+
+    .contacto button {
+      padding: 14px 28px;
+      border: 0;
+      border-radius: 8px;
+      background: white;
+      color: var(--acento);
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--textocorrido);
+      transition: 0.2s ease;
+    }
+
+    .contacto button:hover {
+      background: var(--acentosuave);
+    }
+
+    footer {
+      background: #1a1f2e;
+      color: white;
+      padding: 60px 0 40px;
+    }
+
+    footer .contenedor {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 40px;
+    }
+
+    footer h3 {
+      font-family: var(--titular);
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 0 0 16px;
+    }
+
+    footer ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    footer li {
+      margin-bottom: 8px;
+    }
+
+    footer a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: 0.2s ease;
+    }
+
+    footer a:hover {
+      color: white;
+    }
+
+    footer .info {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    footer .copyright {
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.5);
+      text-align: center;
+    }
+
+    @media (max-width: 840px) {
+      footer .contenedor {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 32px;
+      }
+
+      .contacto form {
+        flex-direction: column;
+      }
+
+      .contacto input {
+        min-width: auto;
+        width: 100%;
+      }
+      .tabla-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .portada-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-image {
+        margin-top: 32px;
+        min-height: 260px;
+      }
+
+      .teclados-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .proceso-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .decisiones-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="cabecera">
+    <div class="container">
+      <p class="marca">TECLA</p>
+
+      <nav class="menu" aria-label="Navegación principal">
+        <a href="#teclados">Teclados</a>
+        <a href="#switches">Switches</a>
+        <a href="#teclas">Teclas</a>
+        <a href="#montaje">Montaje</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+      <button class="comprar">Carrito (0)</button>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="portada">
+      <div class="contenedor">
+            <div class="portada-grid">
+          <div class="portada-copy">
+            <p class="antetitulo">montaje a mano · envio en 72 h</p>
+            <h1>Un teclado que <span>suena</span> como tu quieres</h1>
+            <p>
+              Eliges la carcasa, los switches y las teclas. Nosotros lo montamos, lo lubricamos y lo probamos tecla a tecla antes de meterlo en la caja
+            </p>
+
+            <div class="acciones">
+              <button class="boton1">Configurar el mio</button>
+              <button class="boton2">Ver como se monta</button>
+            </div>
+          </div>
+
+          <img class="hero-image" src="img/220169.png" alt="Teclado personalizado">
+          <hr class="separador">
+        </div>
+      </div>
+    </section>
+    <section class="teclados" id="teclados">
+      <div class="contenedor teclados-grid">
+        <div class="teclados-img">
+          <img class="hero-image" src="img/ASSET_MMS_83176778.jpg" alt="Teclado personalizado">
+          <p class="texto-imagen">TECLA 65% en acabado Nebula, con teclas PBT.</p>
+        </div>
+
+        <div class="teclados-info">
+          <p class="antetitulo">Modelo 65%</p>
+          <h2>TECLA 65 --- Nebula</h2>
+          <p class="precio">189 €</p>
+          <p>Carcasa de aluminio fresado, montado en junta y 68 teclas.
+             Viene montado, lubricado y probado, listo para escribir nada
+             más sacarlo de la caja.</p>
+          <ul>
+            <li>Switches lineales, táctiles o clicky</li>
+            <li>Teclas PBT de doble inyección</li>
+            <li>Cable trenzado USB-C incluido</li>
+            <li>Herramientas de cambio de tecla</li>
+          </ul>
+          <button class="carrito">Añadir al carrito</button>
+          <blockquote>
+            Cada teclado se monta a mano. Tarda entre 3 y 5 días laborales en salir del taller.
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <section class="proceso">
+      <div class="contenedor">
+        <p class="antetitulo">EL PROCESO</p>
+        <h2>De las piezas al primer clic</h2>
+
+        <div class="proceso-grid">
+          <article>
+            <hr class="separador2">
+            01
+            <h3>Eliges la base</h3>
+            <p>Alumio o policarbonato, en
+              cuatro colores. La base marca el
+              peso y el sonido.
+            </p>
+          </article>
+          <article>
+            <hr class="separador2">
+            02
+            <h3>Eliges los switches</h3>
+            <p>Los probamos contuigo en el taller
+              o te mandamos un muestrario
+              con nueve modelos.
+            </p>
+          </article>
+          <article>
+            <hr>
+            03
+            <h3>Lubricamos y montamos</h3>
+            <p>Switch a switch, con espuma en
+              tres capas y estabilizadores
+              ajustados.
+            </p>
+          </article>
+          <article>
+            <hr>
+            04
+            <h3>Probamos las 68 teclas</h3>
+            <p>Ninguna sale del taller sin pasar
+              el test completo. Te mandamos
+              el informe.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+<section class="decisiones">
+  <div class="contenedor">
+    <p class="antetitulo">QUE LO HACE DISTINTO</p>
+    <h2>Seis decisiones que se notan al escribir</h2>
+
+    <div class="decisiones-grid">
+      <article>
+        <h3>Carcasa fresada</h3>
+        <p>Un bloque de aluminio 6063
+          mecanizado. Pesa 1,12kg y no se
+          mueve de la mesa.
+        </p>
+      </article>
+      <article>
+        <h3>Montaje en junta</h3>
+        <p>La placa apoya sobre juntas de
+          silicona. El teclado cede un poco al
+          pulsar.
+        </p>
+      </article>
+      <article>
+        <h3>Espuma de tres capas</h3>
+        <p>Poron bajo la placa, PET entre capas
+          y espuma en el fondo. Sin eco
+          metálico.
+        </p>
+      </article>
+      <article>
+        <h3>Cable y Bluetooth</h3>
+        <p>USB-C para el escritorio y Bluetooth
+           5.1 para hasta tres equipos
+          guardados
+        </p>
+      </article>
+      <article>
+        <h3>Teclas PBT</h3>
+        <p>Doble inyección: la leyenda es
+          plástico, no pintura. No se borra con
+          el uso.
+        </p>
+      </article>
+      <article>
+        <h3>Se reprograma solo</h3>
+        <p>Cambias cualquier tecla desde el
+          navegador. Sin instalar nada en el
+          equipo.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+    <section class="tabla-section">
+      <div class="contenedor">
+        <p class="antetitulo">FICHA TÉCNICA</p>
+        <h2>TECLA 65 al detalle</h2>
+
+        <div class="tabla-wrapper">
+          <div class="tabla-grid">
+            <div class="tabla-item">
+              <h3>Formato</h3>
+              <p>Diseño compacto de 65%, pensado para quien quiere espacio y comodidad al escribir.</p>
+            </div>
+            <div class="tabla-item">
+              <h3>Carcasa</h3>
+              <p>Carcasa de aluminio con acabado premium y una sensación sólida al tacto.</p>
+            </div>
+            <div class="tabla-item">
+              <h3>Switches</h3>
+              <p>Switches lineales, táctiles o clicky según el tipo de uso y el sonido que prefieras.</p>
+            </div>
+            <div class="tabla-item">
+              <h3>Perfil de tecla</h3>
+              <p>Teclas con perfil bajo y curva ergonómica para una escritura más natural.</p>
+            </div>
+            <div class="tabla-item">
+              <h3>Conexión</h3>
+              <p>USB-C para escritorio y Bluetooth para conectar con varios dispositivos.</p>
+            </div>
+            <div class="tabla-item">
+              <h3>Batería</h3>
+              <p>Autonomía de varias semanas con uso diario moderado y carga USB-C.</p>
+            </div>
+            <div class="tabla-item">
+              <h3>Peso</h3>
+              <p> <strong>Diseño ligero y estable, con un peso pensado para uso diario y movilidad.</strong></p>
+            </div>
+            <div class="tabla-item">
+              <h3>Garantía</h3>
+              <p>Garantía de 2 años sobre el montaje, la estructura y el funcionamiento del teclado.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+<section class="opiniones">
+  <div class="contenedor">
+    <p class="antetitulo">QUIEN YA ESCRIBE CON UNO</p>
+    <h2>Opiniones del taller</h2>
+    <div class="opiniones-grid">
+      <article>
+        <p>Llevaba años con un teclado de oficina. La diferencia está en el sonido: es grave y seco, no repica.</p>
+        <p><strong>Nayra D.</strong> · Las Palmas</p>
+      </article>
+      <article>
+        <p>Pedí los switches táctiles después de probar el muestrario. Acertaron con la recomendación.</p>
+        <p><strong>Ruben P.</strong> · Valencia</p>
+      </article>
+      <article>
+        <p>Me cambiaron el mapa de teclas para programar y me mandaron el archivo por si lo quiero editar.</p>
+        <p><strong>Alba S.</strong> · Bilbao</p>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="preguntas">
+  <div class="contenedor">
+    <div class="preguntas-encabezado">
+      <p class="antetitulo">DUDAS FRECUENTES</p>
+      <h2>Antes de pedirlo</h2>
+    </div>
+
+    <div class="preguntas-lista">
+      <div class="pregunta-item">
+        <h3>¿Puedo cambiar los switches?</h3>
+        <p>Sí. Todos los modelos llevan zocalo, así que se sacan y se ponen a mano, sin soldar nada.</p>
+      </div>
+      <div class="pregunta-item">
+        <h3>¿Hace mucho ruido para una oficina?</h3>
+        <p>Con switches lineales y espuma de serie es más silencioso que un teclado de membrana.</p>
+      </div>
+      <div class="pregunta-item">
+        <h3>¿Funciona en Mac y en Linux?</h3>
+        <p>Sí. Hay un interruptor físico en la parte de atrás para cambiar la distribución.</p>
+      </div>
+      <div class="pregunta-item">
+        <h3>¿Qué pasa si se rompe una tecla?</h3>
+        <p>Te mandamos la pieza suelta. Las teclas y los estabilizadores se venden por separado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="contacto" id="contacto">
+  <div class="contenedor">
+    <h2>Te avisamos cuando abramos la siguiente tanda</h2>
+    <p>Montamos 40 teclados al mes. Deja el correo y te escribimos el día que abrimos pedidos.</p>
+
+    <form action="#" method="post">
+      <input type="email" name="correo" placeholder="Correo electrónico" required>
+      <button type="submit">Avisadme</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="contenedor">
+    <div>
+      <h3>TECLA</h3>
+      <p class="info">Taller de teclados mecánicos a medida. Montamos, lubricamos y probamos.</p>
+    </div>
+    <div>
+      <h3>TIENDA</h3>
+      <ul>
+        <li><a href="#">Teclados inventados</a></li>
+        <li><a href="#">Kits sin montar</a></li>
+        <li><a href="#">Switches</a></li>
+        <li><a href="#">Teclas</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>AYUDA</h3>
+      <ul>
+        <li><a href="#">Dudas frecuentes</a></li>
+        <li><a href="#">Envios y plazos</a></li>
+        <li><a href="#">Devoluciones</a></li>
+        <li><a href="#">Garantía</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>TALLER</h3>
+      <ul>
+        <li><a href="#">Calle Ferney 12</a></li>
+        <li><a href="#">9030 Las Palmas</a></li>
+        <li><a href="#">hola@tecla.example</a></li>
+        <li><a href="#">Lunes a viernes, 10 a 18 h</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="copyright" style="margin-left: auto; margin-right: auto; width: min(1100px, 90%);">
+    <p>Proyecto de clase. Los productos y precios son inventados.</p>
+  </div>
+</footer>
+  </main>
+
+</body>
+</html>

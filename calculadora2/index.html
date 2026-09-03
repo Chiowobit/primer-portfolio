@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Calculadora</title>
+
+    <link rel="stylesheet" href="styles.css" />
+    <script src="main.js" defer></script>
+  </head>
+
+  <body>
+    <div id="calculadora">
+      <div class="contenedor-pantalla">
+        <input type="text" name="pantalla" id="pantalla" readonly value="0" />
+      </div>
+
+      <section class="fila">
+        <button onclick="aplicarValor('c')">C</button>
+        <button onclick="aplicarValor('ce')">CE</button>
+        <button onclick="aplicarValor('%')">%</button>
+        <button onclick="aplicarValor('/')">/</button>
+      </section>
+
+      <section class="fila">
+        <button onclick="aplicarValor(7)">7</button>
+        <button onclick="aplicarValor(8)">8</button>
+        <button onclick="aplicarValor(9)">9</button>
+        <button onclick="aplicarValor('*')">*</button>
+      </section>
+
+      <section class="fila">
+        <button onclick="aplicarValor(4)">4</button>
+        <button onclick="aplicarValor(5)">5</button>
+        <button onclick="aplicarValor(6)">6</button>
+        <button onclick="aplicarValor('-')">-</button>
+      </section>
+
+      <section class="fila">
+        <button onclick="aplicarValor(1)">1</button>
+        <button onclick="aplicarValor(2)">2</button>
+        <button onclick="aplicarValor(3)">3</button>
+        <button onclick="aplicarValor('+')">+</button>
+      </section>
+
+      <section class="fila">
+        <button onclick="aplicarValor('()')">()</button>
+        <button onclick="aplicarValor(0)">0</button>
+        <button onclick="aplicarValor(',')">,</button>
+        <button onclick="aplicarValor('=')">=</button>
+      </section>
+    </div>
+  </body>
+</html>

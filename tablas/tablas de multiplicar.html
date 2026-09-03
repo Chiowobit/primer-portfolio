@@ -1,0 +1,277 @@
+<!DOCTYPE html> <!-- Informa al navegador que este es un documento HTML5 estándar -->
+<html lang="es"> <!-- Abre el documento HTML y define el idioma en español -->
+<head> <!-- Contiene metadatos e información no visible directamente en la página -->
+<meta charset="UTF-8"> <!-- Asegura que caracteres como eñes, acentos o emojis se muestren correctamente -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace que la web sea responsiva (se adapte a móviles) -->
+
+<title>Calculadora de Tablas de Multiplicar</title> <!-- Define el título que aparece en la pestaña del navegador -->
+
+<style> /* Inicia el bloque donde se define el diseño visual (CSS) */
+
+/* ============================
+   ESTILO GENERAL
+============================ */
+
+body{
+    margin:0; /* Elimina los márgenes predeterminados alrededor de la pantalla */
+    font-family:Arial, Helvetica, sans-serif; /* Define fuentes limpias y fáciles de leer */
+    display:flex; /* Activa el modelo Flexbox para posicionar elementos fácilmente */
+    justify-content:center; /* Centra el contenido horizontalmente en la pantalla */
+    align-items: center;  /* Centra el contenido verticalmente en la pantalla */
+    padding-top: 40px;
+}
+
+/* Caja principal */
+
+.contenedor{
+    background:white; /* Fondo blanco para la tarjeta */
+    width:420px; /* Ancho fijo ideal para computadoras */
+    max-width:90%; /* Evita que la tarjeta se desborde en pantallas de móviles pequeños */
+    padding:30px; /* Espacio interno entre el borde y el contenido de la tarjeta */
+    border-radius:20px; /* Bordes redondeados y elegantes */
+    box-shadow:0px 10px 30px rgba(0,0,0,.25); /* Añade una sombra suave para dar un efecto flotante */
+}
+
+/* Título */
+
+h1{
+    text-align:center; /* Centra el texto del título */
+    color:#1565C0; /* Color de texto azul oscuro corporativo */
+    margin-top:0; /* Elimina el espacio superior predeterminado del título */
+}
+
+/* Etiquetas */
+
+label{
+    font-weight:bold; /* Hace que el texto del label sea negrita */
+    display:block; /* Fuerza a que cada etiqueta ocupe toda la línea (colocando el input abajo) */
+    margin-top:15px; /* Espacio de separación con el elemento superior */
+}
+
+/* Cajas de texto */
+
+input{
+    width:100%; /* El campo de texto ocupa todo el ancho disponible de la tarjeta */
+    padding:12px; /* Relleno interno para que sea cómodo escribir */
+    margin-top:5px; /* Pequeño espacio de separación con su etiqueta superior */
+    border-radius:8px; /* Bordes ligeramente redondeados */
+    border:1px solid #CCC; /* Borde gris fino */
+    font-size:18px; /* Tamaño de letra grande para facilitar la lectura */
+    box-sizing:border-box; /* Asegura que el padding no altere el ancho del 100% del input */
+}
+
+/* Botones */
+
+.botones{
+    display:flex; /* Activa Flexbox para organizar los botones en línea */
+    justify-content:space-between; /* Distribuye el espacio para que queden en los extremos */
+    margin-top:20px; /* Espacio entre los campos de texto y los botones */
+}
+
+button{
+    width:48%; /* Cada botón ocupa casi la mitad de la tarjeta (dejando un 4% de separación) */
+    padding:12px; /* Espacio de relleno interno del botón */
+    border:none; /* Elimina el borde tosco por defecto */
+    border-radius:8px; /* Bordes redondeados idénticos a los inputs */
+    font-size:17px; /* Letra legible */
+    cursor:pointer; /* Cambia el cursor a una "mano" al pasar sobre el botón */
+    color:white; /* Texto en blanco para contrastar con los colores de fondo */
+    transition:.3s; /* Suaviza los cambios de color al pasar el mouse */
+}
+
+#calcular{
+    background:#2196F3; /* Color de fondo azul brillante para el botón de acción principal */
+}
+
+#calcular:hover{
+    background:#1976D2; /* Azul más oscuro cuando el usuario pasa el cursor por encima */
+}
+
+#limpiar{
+    background:#F44336; /* Color rojo para el botón de borrar/limpiar */
+}
+
+#limpiar:hover{
+    background:#D32F2F; /* Rojo más oscuro cuando el usuario pasa el cursor por encima */
+}
+
+/* Resultado */
+
+#resultado{
+    margin-top:25px; /* Distancia entre los botones y la zona de resultados */
+    border-top:2px solid #DDD; /* Línea divisoria gris claro */
+    padding-top:15px; /* Espacio entre la línea divisoria y las operaciones */
+    min-height:150px; /* Asegura un espacio mínimo vacío para evitar que la tarjeta cambie bruscamente de tamaño */
+}
+
+.linea{
+    padding:8px; /* Relleno interno de cada fila de multiplicación */
+    margin:5px 0; /* Espacio entre filas */
+    background:#E3F2FD; /* Fondo azul muy claro para resaltar la operación */
+    border-radius:8px; /* Bordes redondeados individuales */
+    font-size:20px; /* Letra grande para destacar los números */
+    text-align:center; /* Centra la operación matemática */
+    transition:.2s; /* Suaviza el efecto de animación hover */
+}
+
+.linea:hover{
+    background:#BBDEFB; /* Azul un poco más fuerte al pasar el mouse por encima */
+    transform:scale(1.03); /* Efecto visual que "agranda" ligeramente la fila (3% más grande) */
+}
+
+</style> <!-- Cierra el bloque de estilos CSS -->
+</head> <!-- Cierra la sección de la cabecera del documento -->
+
+<body> <!-- Inicia el cuerpo visible de la página -->
+
+<div class="contenedor"> <!-- Caja principal que agrupa toda la interfaz -->
+
+<h1>📚 Tabla de Multiplicar</h1> <!-- Título principal de la calculadora con un emoji decorativo -->
+
+<label>Número</label> <!-- Etiqueta para el primer campo -->
+
+<input type="number" id="numero" placeholder="Introduce un número"> <!-- Entrada de tipo numérico donde el usuario escribe el número base --> <!--placeholder para meter texto dentro del recuadro-->
+
+<label>Hasta el número</label> <!-- Etiqueta para el segundo campo -->
+
+<input type="number" id="hasta" value="10"> <!-- Entrada numérica que limita la tabla. Viene preestablecida en 10 -->
+
+<div class="botones"> <!-- Caja contenedora de los dos botones -->
+
+<button id="calcular">Calcular</button> <!-- Botón que iniciará el cálculo de la tabla -->
+
+<button id="limpiar">Limpiar</button> <!-- Botón que vaciará los campos y el resultado -->
+
+</div> <!-- Cierra el contenedor de botones -->
+
+<div id="resultado"></div> <!-- Contenedor vacío donde se insertará la tabla generada dinámicamente -->
+
+</div> <!-- Cierra la tarjeta contenedora principal -->
+
+<script> //Inicia el código JavaScript
+
+/*========================================
+REFERENCIAS A LOS ELEMENTOS HTML
+=========================================*/
+// Las siguientes líneas crean "puentes" entre el código HTML y JavaScript usando sus IDs exclusivos
+
+const numero=document.getElementById("numero"); // Guarda el acceso a la caja donde el usuario escribe el número base
+
+const hasta=document.getElementById("hasta"); // Guarda el acceso al campo del límite de multiplicaciones
+
+const resultado=document.getElementById("resultado"); // Guarda el acceso al div vacío donde se mostrarán los resultados
+
+const calcular=document.getElementById("calcular"); // Guarda el acceso al botón "Calcular"
+
+const limpiar=document.getElementById("limpiar"); // Guarda el acceso al botón "Limpiar"
+
+/*========================================
+FUNCIÓN PRINCIPAL
+=========================================*/
+
+function calcularTabla(){ // Define la función que realiza el cálculo de la tabla de multiplicar
+
+    // Obtener el número introducido
+    let n=parseInt(numero.value); // Lee el valor del primer input y lo convierte en un número entero (Integer)
+
+    // Obtener el límite
+    let limite=parseInt(hasta.value); // Lee el valor de hasta dónde multiplicar y lo convierte en entero
+
+    // Validaciones
+
+    if(isNaN(n)){ // Verifica si lo que se ingresó en el primer campo no es un número (is Not a Number)
+
+        alert("Debes escribir un número."); // Muestra un mensaje emergente de advertencia
+
+        numero.focus(); // Coloca automáticamente el cursor de escritura de vuelta en ese input
+
+        return; // Detiene inmediatamente la ejecución de la función para que no continúe calculando
+
+    }
+
+    if(isNaN(limite) || limite<=0){ // Verifica si el límite no es un número o si es menor o igual a cero
+
+        alert("El límite debe ser mayor que cero."); // Muestra advertencia al usuario
+
+        hasta.focus(); // Coloca el cursor en el input del límite
+
+        return; // Detiene la función
+
+    }
+
+    // Limpiar resultados anteriores
+    resultado.innerHTML=""; // Vacía por completo cualquier operación o texto que estuviese previamente en la zona de resultados
+
+    // Crear la tabla
+    for(let i=1;i<=limite;i++){ // Ciclo que inicia en i = 1 y se repetirá sumando de 1 en 1 hasta que llegue al número límite
+
+        // Multiplicación
+        let producto=n*i; // Multiplica el número base 'n' por el valor actual del ciclo 'i'
+
+        // Crear un DIV
+        let linea=document.createElement("div"); // Crea un nuevo elemento <div> en memoria (aún no es visible en pantalla)
+
+        linea.className="linea"; // Le asigna la clase CSS "linea" para que tome los estilos de diseño definidos arriba
+
+        // Inserta el texto formateado dentro del nuevo div (usa acentos graves `` para incrustar variables fácilmente y <strong> para la negrita)
+        linea.innerHTML=`${n} × ${i} = <strong>${producto}</strong>`; 
+
+        // Añadir al resultado
+        resultado.appendChild(linea); // Inserta físicamente la nueva fila dentro del contenedor de resultados en la página
+
+    } // Termina el ciclo 'for'
+
+} // Termina la función calcularTabla
+
+/*========================================
+LIMPIAR
+=========================================*/
+
+function limpiarFormulario(){ // Define la función para restablecer toda la calculadora
+
+    numero.value=""; // Borra el contenido de la caja de número principal
+
+    hasta.value=10; // Restablece el límite a su valor original de 10
+
+    resultado.innerHTML=""; // Limpia los resultados que se hayan mostrado en pantalla
+
+    numero.focus(); // Enfoca automáticamente el primer input para que el usuario pueda escribir de nuevo de inmediato
+
+}
+
+/*========================================
+EVENTOS
+=========================================*/
+// Los "oyentes de eventos" (EventListeners) vigilan las acciones del usuario para ejecutar el código correspondiente
+
+// Botón Calcular
+calcular.addEventListener("click",calcularTabla); // Si se hace clic en el botón "Calcular", se dispara la función calcularTabla
+
+// Botón Limpiar
+limpiar.addEventListener("click",limpiarFormulario); // Si se hace clic en "Limpiar", se ejecuta la función limpiarFormulario
+
+// Pulsar Enter
+numero.addEventListener("keypress",function(e){ // Escucha cuando el usuario presione una tecla dentro del primer input
+
+    if(e.key==="Enter"){ // Si la tecla presionada es específicamente "Enter"
+
+        calcularTabla(); // Ejecuta automáticamente el cálculo sin que tengan que hacer clic en el botón
+
+    }
+
+});
+
+hasta.addEventListener("keypress",function(e){ // Escucha cuando se presione una tecla en el input del límite
+
+    if(e.key==="Enter"){ // Si la tecla es "Enter"
+
+        calcularTabla(); // Ejecuta el cálculo directamente
+
+    }
+
+});
+
+</script> <!-- Cierra el bloque de código JavaScript -->
+
+</body> <!-- Cierra el cuerpo del documento -->
+</html> <!-- Fin de todo el documento HTML -->
